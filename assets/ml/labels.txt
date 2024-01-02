@@ -1,0 +1,16 @@
+0 Basket Bin
+1 Broom
+2 Chair
+3 Electric Socket
+4 Fire Extinguisher
+5 1 Ringgit Malaysia
+6 5 Ringgit Malaysia
+7 10 Ringgit Malaysia
+8 20 Ringgit Malaysia
+9 50 Ringgit Malaysia
+10 100 Ringgit Malaysia
+11 Scissor
+12 Table
+13 Fan
+14 Human Being
+15 Cane Stick
