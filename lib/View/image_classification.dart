@@ -2,33 +2,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_tflite/flutter_tflite.dart';
+import 'package:tflite_v2/tflite_v2.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'dart:developer' as devtools;
-
-// void main() {
-//   runApp(const MyApp());
-// }
-//
-
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//         useMaterial3: true,
-//       ),
-//       home: const MyHomePage(),
-//     );
-//   }
-// }
 
 class ImageClassificationPage extends StatefulWidget {
   const ImageClassificationPage({super.key});
@@ -137,6 +114,7 @@ class _ImageClassificationPageState extends State<ImageClassificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.indigo[900],
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -159,7 +137,7 @@ class _ImageClassificationPageState extends State<ImageClassificationPage> {
                           height: 280,
                           width: 280,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.indigo[900],
                             borderRadius: BorderRadius.circular(12),
                             image: const DecorationImage(
                               image: AssetImage('assets/upload.jpg'),
@@ -193,6 +171,7 @@ class _ImageClassificationPageState extends State<ImageClassificationPage> {
                                 "The Accuracy is ${confidence.toStringAsFixed(0)}%",
                                 style: const TextStyle(
                                   fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(
@@ -214,14 +193,19 @@ class _ImageClassificationPageState extends State<ImageClassificationPage> {
                   pickImageCamera();
                 },
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
-                    ),
-                    foregroundColor: Colors.black),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  backgroundColor: Colors.deepOrangeAccent,
+                  foregroundColor: Color(0xF6F5F5FF),
+                ),
                 child: const Text(
                   "Take a Photo",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -232,14 +216,19 @@ class _ImageClassificationPageState extends State<ImageClassificationPage> {
                   pickImageGallery();
                 },
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
-                    ),
-                    foregroundColor: Colors.black),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  backgroundColor: Colors.deepOrangeAccent,
+                  foregroundColor: Color(0xF6F5F5FF),
+                ),
                 child: const Text(
                   "Pick from gallery",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ],

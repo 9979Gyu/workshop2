@@ -39,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
     final String usernameText = usernameController.text;
     late QuerySnapshot userSnapshot;
 
-    if (usernameText != "") {
+    if (usernameText.isNotEmpty) {
       userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('username', isEqualTo: usernameText)

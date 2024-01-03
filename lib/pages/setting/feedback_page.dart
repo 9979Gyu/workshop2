@@ -36,13 +36,6 @@ class _FeedbackScreenState extends State<FeedbackPage> {
         'status' : 1,
       });
 
-      // inform the user that the profile has been updated
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text('Feedback saved successfully'),
-      //   ),
-      // );
-
       print("Successfully saved feedback");
 
     } catch(e){
@@ -136,6 +129,7 @@ class _FeedbackScreenState extends State<FeedbackPage> {
                Padding(
                 padding:  const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: messageController,
                   decoration: InputDecoration(
                     enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
@@ -179,7 +173,7 @@ class _FeedbackScreenState extends State<FeedbackPage> {
                         fontWeight: FontWeight.bold),
                   ),
                   onPressed: (){
-                   if(messageController.text != ""){
+                   if(messageController.text.trim().isNotEmpty){
                      saveFeedbackData();
                      // inform the user that the feedback has been sent
                      Navigator.push(

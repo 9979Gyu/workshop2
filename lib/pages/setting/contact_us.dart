@@ -89,6 +89,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               Padding(
                 padding:  const EdgeInsets.symmetric(horizontal: 4.0),
                 child: TextField(
+                  controller: messageController,
                   decoration: InputDecoration(
                     enabledBorder:  OutlineInputBorder(
                       borderSide: const BorderSide(color: Colors.white),
@@ -142,8 +143,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                    onPressed: (){
                      // add save input to database function
                     // await saveContactData();
-                     print("Hello ${messageController.text}");
-                     if(messageController.text != " "){
+                     if(messageController.text.trim().isNotEmpty){
                        saveContactData();
                        // Inform user that the feedback has been sent
                        Navigator.push(
