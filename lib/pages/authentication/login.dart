@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
     // try login
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
+        email: emailController.text.trim(),
         password: passwordController.text,
       );
       // pop loading circle before user logged in
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // Saving data to shared preferences after successful login
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('email', emailController.text);
+      await prefs.setString('email', emailController.text.trim());
 
 
       // Navigate to HomePage after successfully login
