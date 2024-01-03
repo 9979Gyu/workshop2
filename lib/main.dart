@@ -1,12 +1,12 @@
-import 'package:workshop2/firebase/auth_service.dart';
-import 'package:workshop2/firebase/firebase_api.dart';
-import 'package:workshop2/pages/authentication/login.dart';
-import 'package:workshop2/pages/setting/Notification%20page/local_notifications.dart';
-import 'package:workshop2/pages/setting/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:glaucotalk/database/auth_service.dart';
+import 'package:glaucotalk/pages/settings/Notification%20page/local_notifications.dart';
+import 'package:glaucotalk/pages/settings/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'database/firebase_api.dart';
 import 'firebase_options.dart';
+import 'pages/MySplashPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(onTap: () {  },),
+      home: MySplashPage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }

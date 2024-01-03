@@ -1,4 +1,4 @@
-# workshop2
+# glaucotalk
 
 A new Flutter project.
 

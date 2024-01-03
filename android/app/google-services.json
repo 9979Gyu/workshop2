@@ -41,6 +41,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200785318528:android:f81fb232e45925185f0c65",
+        "android_client_info": {
+          "package_name": "com.example.glaucotalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "200785318528-066qi0p5m9bovg81hlh5erqm0be40kns.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXa5mTk7sd5sSMITKHo9HdJVJvcxmEyAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "200785318528-066qi0p5m9bovg81hlh5erqm0be40kns.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

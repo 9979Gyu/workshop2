@@ -8,7 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../camera/camera.dart';
-import '../home_page.dart';
+import '../homepage.dart';
+
 
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({Key? key}) : super(key: key);
@@ -41,6 +42,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
       // check if status is not empty
       if (_statusText == null || _statusText!.isEmpty){
         print('Status text is empty');
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -68,14 +70,18 @@ class _AddStoryPageState extends State<AddStoryPage> {
       // proceed with uploading the image first
       final storageReference = _storage
           .ref()
-          .child('status_images/${user.uid}_${DateTime.now().millisecondsSinceEpoch}.png');
+          .child('status_images/${user.uid}_${DateTime.now()
+          .millisecondsSinceEpoch}.png');
 
       final uploadTask = storageReference.putFile(File(_pickedImage!.path));
       final TaskSnapshot uploadSnapshot = await uploadTask;
       final String imageDownloadUrl = await uploadSnapshot.ref.getDownloadURL();
 
+      String username = user.displayName ?? user.email?.split('@')[0] ?? 'Unknown User';
+
       await FirebaseFirestore.instance.collection('status').add({
         'userID': user.uid,
+        'username': username,
         'statusText': _statusText,
         'mediaUrl': imageDownloadUrl,
         'timeStamp': FieldValue.serverTimestamp(),
@@ -110,13 +116,59 @@ class _AddStoryPageState extends State<AddStoryPage> {
       MaterialPageRoute(
         builder: (context) => TakePictureScreen(
             camera: camera,
-            onSavePicture: (XFile? image) async {
-              if (image != null) {
-                await savePictureToStorage(image);
+            onSavePicture: (XFile? imageFile) async {
+              if (imageFile != null) {
+                setState(() {
+                  _pickedImage = imageFile;
+                });
               }
             }
         ),
       ),
+    );
+  }
+
+  void _selectImageFromGallery() async {
+    final XFile? pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => _pickedImage = pickedFile);
+    }
+  }
+
+  void _showImageSourceActionSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.camera),
+                title: const Text('Take a picture'),
+                onTap: () {
+                  Navigator.pop(context);
+                  if (firstCamera != null) {
+                    navigateToTakePictureScreen(context, firstCamera!);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('No Camera Available')),
+                    );
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.image),
+                title: const Text('Choose from gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _selectImageFromGallery();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -242,13 +294,13 @@ class _AddStoryPageState extends State<AddStoryPage> {
                       });
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepOrange,
+                    shape: const StadiumBorder(),
+                  ),
                   child: const Text('Select Image',
                   style: TextStyle(
                       color: Colors.white),),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.deepOrange,
-                    shape: const StadiumBorder(),
-                  ),
                 ),
                 if (_pickedImage != null)
                   Image.file(
@@ -261,16 +313,11 @@ class _AddStoryPageState extends State<AddStoryPage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            navigateToTakePictureScreen(context, firstCamera!);
-          },
-          child: const Icon(
-            Icons.camera_alt,
-            color: Colors.white,
-          size: 25,
-          ),
+          onPressed: () => _showImageSourceActionSheet(context),
           backgroundColor: Colors.deepOrange,
+          child: const Icon(Icons.add, color: Colors.white, size: 25),
         ),
+
       ),
     );
   }

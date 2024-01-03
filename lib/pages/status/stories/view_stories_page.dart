@@ -1,10 +1,10 @@
 import 'dart:io';
-
-import 'package:workshop2/pages/home_page.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../homepage.dart';
 
 class ViewStoriesPage extends StatefulWidget {
   const ViewStoriesPage({super.key});
@@ -78,6 +78,9 @@ class _ViewStoriesPageState extends State<ViewStoriesPage> {
               Map<String, dynamic> data
               = story.data() as Map<String, dynamic>;
 
+              // Modify here to include the user's name
+              String postedBy = data['username'] ?? 'Unknown User';
+
               return ListTile(
                 leading: data['mediaUrl'] != null
                     ? Image.network(data['mediaUrl'],
@@ -96,7 +99,8 @@ class _ViewStoriesPageState extends State<ViewStoriesPage> {
                     fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(
-                    'Posted by ${data['userID'] ?? 'Unknown'}',
+                   // 'Posted by ${data['userID'] ?? 'Unknown'}',
+                    'Posted by ${data['username']}',
                   style: TextStyle(
                       color: myTextColor,
                       fontSize: 16),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workshop2/components/progress_bar.dart';
+import 'package:glaucotalk/components/progress_bar.dart';
 
 class MyStoryBars extends StatelessWidget {
 

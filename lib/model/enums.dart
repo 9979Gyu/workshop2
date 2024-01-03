@@ -1,0 +1,6 @@
+
+
+enum Role {
+  user,
+  volunteer
+}

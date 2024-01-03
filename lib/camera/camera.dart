@@ -87,12 +87,37 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     super.dispose();
   }
 
+  Future<void> savePictureToStorage(String sourceImagePath, String destinationImagePath) async {
+    try {
+      final rawImage = File(sourceImagePath).readAsBytesSync();
+      final image = decodeImage(Uint8List.fromList(rawImage));
+
+      if (image != null) {
+        final savedFile = File(destinationImagePath);
+        savedFile.writeAsBytesSync(encodeJpg(image));
+
+        // You can add additional code here, such as showing a success message.
+      } else {
+        print('Failed to process the image');
+      }
+    } catch (e) {
+      print('Unable to save the picture to local storage: $e');
+      // You can handle the error here.
+    }
+  }
+
   Future<void> _displayImageFoundFromGallery() async {
     try {
       final picker = ImagePicker();
       final XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
       if (pickedImage != null) {
+        // Specify the destination path where you want to save the image in local storage.
+        final localImagePath = '${(await getApplicationDocumentsDirectory()).path}/local_image.jpg';
+
+        // Call the function to save the picked image to local storage
+        await savePictureToStorage(pickedImage.path, localImagePath);
+
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => DisplayPictureScreen(
@@ -109,7 +134,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.indigo[900],
       appBar: AppBar(
+        backgroundColor: Colors.black54,
         title: const Text('Take A Picture'),
       ),
       body: FutureBuilder<void>(

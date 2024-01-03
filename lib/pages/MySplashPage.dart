@@ -1,6 +1,8 @@
-import 'package:workshop2/pages/main_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
+
+import 'main_menu.dart';
+
 class MySplashPage extends StatefulWidget {
   const MySplashPage({super.key});
 
