@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'chat_page.dart';
+
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -133,9 +135,23 @@ class _SearchPageState extends State<SearchPage> {
                         itemBuilder: (context, index) {
                           // Accessing data from each document
                           Map<String, dynamic> userData =
-                          searchSnapshot!.docs[index].data()
-                          as Map<String, dynamic>;
+                            searchSnapshot!.docs[index].data()
+                            as Map<String, dynamic>;
                           return ListTile(
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatPage(
+                                        receiverName: userData['name'],
+                                        receiverUserID:
+                                          searchSnapshot!.docs[index].id,
+                                        senderprofilePicUrl:
+                                          userData['profilePictureUrl']
+                                      )
+                                  )
+                              );
+                            },
                             leading: CircleAvatar(
                               backgroundImage:
                               userData['profilePictureUrl'] != null &&
