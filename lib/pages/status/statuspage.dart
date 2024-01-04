@@ -124,6 +124,21 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
+  Future<void> postStatus(String content, String? mediaUrl) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      Status newStatus = Status(
+        userId: user.uid, // Set the user ID
+        content: content,
+        mediaUrl: mediaUrl,
+        timestamp: Timestamp.fromDate(DateTime.now()),
+        profilePictureUrl: profilePictureUrl,
+      );
+
+      // Add logic to save this status in Firestore
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

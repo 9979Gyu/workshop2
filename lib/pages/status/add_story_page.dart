@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../camera/camera.dart';
 import '../homepage.dart';
@@ -28,10 +29,12 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
   String? _statusText; // Initialize as null or with a default status text
   XFile? _pickedImage; // Updated to use XFile instead of PickedFile
+  DateTime? _statusUploadTime; // Variable to store the upload time
+
 
   Future<void> _uploadStatus() async {
     try {
-      final User? user = _auth.currentUser;
+      final user = _auth.currentUser;
 
       // check if user is logged in
       if(user == null){
@@ -87,14 +90,18 @@ class _AddStoryPageState extends State<AddStoryPage> {
         'timeStamp': FieldValue.serverTimestamp(),
       });
 
+      // Set the upload time after successful upload
+      _statusUploadTime = DateTime.now();
+
       setState(() {
         _statusText = null;
         _pickedImage = null;
       });
 
+      // Show the timestamp in a SnackBar
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Status uploaded successfully'),
+        SnackBar(
+          content: Text('Status uploaded successfully at: ${DateFormat('yyyy-MM-dd – kk:mm').format(_statusUploadTime!)}'),
         ),
       );
 
@@ -302,16 +309,28 @@ class _AddStoryPageState extends State<AddStoryPage> {
                   style: TextStyle(
                       color: Colors.white),),
                 ),
-                if (_pickedImage != null)
-                  Image.file(
-                    File(_pickedImage!.path),
-                    width: 100,
-                    height: 100,
-                  ),
-              ],
-            ),
-          ],
+        if (_pickedImage != null)
+    Column(
+      children: [
+        Image.file(
+          File(_pickedImage!.path),
+          width: 100,
+          height: 100,
         ),
+        if (_statusUploadTime != null)
+          Text(
+            'Uploaded at: ${DateFormat('yyyy-MM-dd – kk:mm').format(_statusUploadTime!)}',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+              ],
+          ),
+          ],
+          ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showImageSourceActionSheet(context),
           backgroundColor: Colors.deepOrange,

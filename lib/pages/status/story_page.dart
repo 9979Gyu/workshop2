@@ -102,20 +102,34 @@ class _StoryPageState extends State<StoryPage> {
               return items;
             }).toList().cast<List<StoryItem>>();
 
-
-
-            return StoryView(
-              storyItems: allUsersStories[currentStoryIndex],
-              controller: storyController,
-              onComplete: () {
+            return PageView.builder(
+              itemCount: allUsersStories.length,
+              controller: PageController(
+                initialPage: currentStoryIndex,
+              ),
+              onPageChanged: (index) {
                 setState(() {
-                  currentStoryIndex = (currentStoryIndex + 1) % allUsersStories.length;
+                  currentStoryIndex = index;
                 });
               },
-              onVerticalSwipeComplete: (direction) {
-                // Logic for vertical swipe action, if needed
+              itemBuilder: (context, index) {
+                final document = stories[index];
+                Map<String, dynamic> documentData = document.data() as Map<String, dynamic>;
+
+                return StoryView(
+                  storyItems: allUsersStories[index],
+                  controller: storyController,
+                  onComplete: () {
+                    setState(() {
+                      currentStoryIndex = (currentStoryIndex + 1) % allUsersStories.length;
+                    });
+                  },
+                  onVerticalSwipeComplete: (direction) {
+                    // Logic for vertical swipe action, if needed
+                  },
+                  // Additional configurations and callbacks as needed
+                );
               },
-              // Additional configurations and callbacks as needed
             );
           },
         ),

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:glaucotalk/components/chat_bubble.dart';
 import 'package:glaucotalk/components/my_text_field.dart';
 import 'package:glaucotalk/database/chat/chat_service.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverName;
@@ -12,10 +12,11 @@ class ChatPage extends StatefulWidget {
   final String senderprofilePicUrl;
 
   const ChatPage({
-    super.key,
+    Key? key,
     required this.receiverName,
     required this.receiverUserID,
-    required this.senderprofilePicUrl});
+    required this.senderprofilePicUrl,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState(receiverUserID: receiverUserID);
@@ -23,6 +24,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final String receiverUserID;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   _ChatPageState({required this.receiverUserID});
 
@@ -30,35 +32,66 @@ class _ChatPageState extends State<ChatPage> {
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  void sendMessage() async{
-    // only send message if there is something to send
-    if (_messageController.text.isNotEmpty){
-      // String profilePicUrl = "lib/images/winter.jpg"; // fetch current user's profile pic
+  @override
+  void initState() {
+    super.initState();
 
+    // Request permission
+    _firebaseMessaging.requestPermission();
+
+    // Initialize Firebase Messaging
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle the incoming message when the app is in the foreground
+      print('Message data: ${message.data}');
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Handle the incoming message when the app is opened by tapping the notification
+      print('Message data: ${message.data}');
+    });
+  }
+
+  void sendMessage() async {
+    // only send message if there is something to send
+    if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
         receiverUserID,
         _messageController.text,
         widget.receiverName,
-        //widget.senderprofilePicUrl,
-        //"",
-
       );
 
-      print(widget.receiverUserID);
       // clear the text controller after sending the message
       _messageController.clear();
+
+      // send notification to the recipient
+      final recipientFCMToken = await getRecipientFCMToken(widget.receiverUserID);
+      if (recipientFCMToken != null) {
+        await sendNotificationToRecipient(recipientFCMToken, _messageController.text);
+      }
     }
   }
 
+  Future<String?> getRecipientFCMToken(String recipientUserID) async {
+    // Retrieve the recipient's FCM token from Firestore or your user database
+    // Return the FCM token
+  }
+
+  Future<void> sendNotificationToRecipient(String recipientFCMToken, String message) async {
+    // Send a notification to the recipient using their FCM token
+    // You can use Firebase Cloud Messaging API or a package like 'http' to send the notification
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.indigo[300],
       appBar: AppBar(
-        title: Text(widget.receiverName,
-          style: const TextStyle(color: Colors.white),),
-        backgroundColor: Colors.indigo[900],),
+        title: Text(
+          widget.receiverName,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.indigo[900],
+      ),
       body: Column(
         children: [
           // Messages
@@ -69,23 +102,22 @@ class _ChatPageState extends State<ChatPage> {
           // User input
           _buildMessageInput(),
           const SizedBox(height: 25),
-
         ],
       ),
     );
   }
 
   // build message list
-  Widget _buildMessageList(){
+  Widget _buildMessageList() {
     return StreamBuilder(
       stream: _chatService.getMessages(
           widget.receiverUserID, _firebaseAuth.currentUser!.uid),
-      builder: (context, snapshot){
-        if(snapshot.hasError){
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
           return Text('Error${snapshot.error}');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting){
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text('Loading..');
         }
 
@@ -94,7 +126,8 @@ class _ChatPageState extends State<ChatPage> {
               .map((document) => _buildMessageItem(document))
               .toList(),
         );
-      },);
+      },
+    );
   }
 
   Widget _buildMessageItem(DocumentSnapshot document) {
@@ -136,7 +169,8 @@ class _ChatPageState extends State<ChatPage> {
               child: Padding(
                 padding: const EdgeInsets.all(9.0),
                 child: Row(
-                  mainAxisAlignment: isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  mainAxisAlignment:
+                  isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (!isCurrentUser && receiverProfilePictureUrl != null)
@@ -146,7 +180,8 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                        isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                         children: [
                           Text(data['senderEmail']),
                           const SizedBox(height: 8),
@@ -170,11 +205,12 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-
   // build message input
-  Widget _buildMessageInput(){
+  Widget _buildMessageInput() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:25.0 ,),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 25.0,
+      ),
       child: Row(
         children: [
           // TextField
@@ -188,12 +224,13 @@ class _ChatPageState extends State<ChatPage> {
 
           // Send button
           IconButton(
-              onPressed: sendMessage,
-              icon:
-              const Icon(
-                Icons.send,
-                size: 40,
-                color: Colors.black,))
+            onPressed: sendMessage,
+            icon: const Icon(
+              Icons.send,
+              size: 40,
+              color: Colors.black,
+            ),
+          )
         ],
       ),
     );
