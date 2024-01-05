@@ -188,6 +188,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> softDeleteUser(String userId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'status': 0}); // set status to 0 = inactive
+    } catch(e){
+      Text("Error soft delete: $e");
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -579,8 +591,11 @@ class _HomePageState extends State<HomePage> {
   Widget _buildUserListItem(DocumentSnapshot document){
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     bool isCurrentUser = _auth.currentUser!.email == data['name'];
+    int status = data['status'] ?? 1; // Default to 1 (active) if status is not presented
 
-    if(_auth.currentUser!.email != data['name']){
+
+
+    if(status == 1 &&_auth.currentUser!.email != data['name']){
       return Dismissible(
         key: Key(document.id), // Unique key for Dismissible
         background: Container(
@@ -593,11 +608,18 @@ class _HomePageState extends State<HomePage> {
         ),
         direction: DismissDirection.endToStart,
         onDismissed: (direction) {
-          // Add your logic to delete the item from Firestore
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(document.id)
-              .delete();
+          softDeleteUser(document.id);
+          // Below code is a permanent delete inside firestore
+          // FirebaseFirestore.instance
+          //     .collection('users')
+          //     .doc(document.id)
+          //     .delete();
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+            const SnackBar(
+              content: Text("Successfully deleted"),
+            ),
+          );
         },
         child: ListTile(
           title: Text(

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../components/Theme_Button.dart';
 import '../../../components/box.dart';
-import '../../homepage.dart';
+import '../../home_page.dart';
 
 class ThemePage extends StatelessWidget {
   const ThemePage({super.key});

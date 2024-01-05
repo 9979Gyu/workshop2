@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glaucotalk/pages/homepage.dart';
+import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/settings/contact_us.dart';
 import 'package:glaucotalk/pages/settings/feedback_page.dart';
 import 'package:google_fonts/google_fonts.dart';

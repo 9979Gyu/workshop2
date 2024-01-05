@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:glaucotalk/autherization/user/login_user.dart';
-import 'package:glaucotalk/pages/homepage.dart';
+import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
           'birthday': dateController.text,
           'username': usernameController.text,
           'role': 'user',
-          'status': 1,
+          'status' : 1,
         });
 
         // Show success message or navigate to homepage
