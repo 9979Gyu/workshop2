@@ -1,7 +1,7 @@
-import 'package:workshop2/pages/home_page.dart';
-import 'package:workshop2/pages/setting/feedback_page.dart';
-import 'package:workshop2/pages/setting/contact_us.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/pages/home_page.dart';
+import 'package:glaucotalk/pages/setting/contact_us.dart';
+import 'package:glaucotalk/pages/setting/feedback_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 

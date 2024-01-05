@@ -2,26 +2,26 @@ import 'dart:async' show Timer;
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:workshop2/camera/camera.dart';
-import 'package:workshop2/firebase/auth_service.dart';
-import 'package:workshop2/pages/chat_page.dart';
-import 'package:workshop2/pages/authentication/login.dart';
-import 'package:workshop2/pages/status/statuspage.dart';
-import 'package:workshop2/pages/search.dart';
-import 'package:workshop2/pages/setting/Notification%20page/noti_page.dart';
-import 'package:workshop2/pages/setting/account_center.dart';
-import 'package:workshop2/pages/setting/help_center.dart';
-import 'package:workshop2/pages/setting/theme/Apparance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:workshop2/pages/profile_page.dart';
+import 'package:glaucotalk/camera/camera.dart';
+import 'package:glaucotalk/database/auth_service.dart';
+import 'package:glaucotalk/pages/chat_page.dart';
+import 'package:glaucotalk/pages/profile_page.dart';
+import 'package:glaucotalk/pages/search.dart';
+import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
+import 'package:glaucotalk/pages/setting/account_center.dart';
+import 'package:glaucotalk/pages/setting/help_center.dart';
+import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
+import 'package:glaucotalk/pages/status/statuspage.dart';
+import 'package:glaucotalk/pages/view/image_classification.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 
-import '../View/image_classification.dart';
+import '../autherization/user/login_user.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -286,7 +286,7 @@ class _HomePageState extends State<HomePage> {
             const Column(
               children: [
                 Expanded(
-                  child: StatusPage(),
+                  child: StatusPage(userId: '',),
                 ),
               ],
             ),

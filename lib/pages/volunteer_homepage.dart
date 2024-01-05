@@ -6,6 +6,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/camera/camera.dart';
+import 'package:glaucotalk/pages/chat_page.dart';
 import 'package:glaucotalk/pages/profile_page.dart';
 import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/settings/Notification%20page/noti_page.dart';
@@ -14,11 +15,9 @@ import 'package:glaucotalk/pages/settings/help_center.dart';
 import 'package:glaucotalk/pages/settings/theme/Apparance.dart';
 import 'package:glaucotalk/pages/status/statuspage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-
 import '../autherization/user/login_user.dart';
 import '../database/auth_service.dart';
-import 'chat/chat_page.dart';
+
 
 class VolHomePage extends StatefulWidget {
   VolHomePage({Key? key}) : super(key: key);

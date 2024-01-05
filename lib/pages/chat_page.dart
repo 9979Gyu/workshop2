@@ -1,9 +1,9 @@
-import 'package:workshop2/components/chat_bubble.dart';
-import 'package:workshop2/components/my_text_field.dart';
-import 'package:workshop2/firebase/chat/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/components/chat_bubble.dart';
+import 'package:glaucotalk/components/my_text_field.dart';
+import 'package:glaucotalk/database/chat/chat_service.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverName;

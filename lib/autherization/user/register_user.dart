@@ -74,7 +74,8 @@ class _RegisterPageState extends State<RegisterPage> {
           'password': passwordController.text,
           'birthday': dateController.text,
           'username': usernameController.text,
-          'role': 'user'
+          'role': 'user',
+          'status': 1,
         });
 
         // Show success message or navigate to homepage

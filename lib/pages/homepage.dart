@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/autherization/user/login_user.dart';
 import 'package:glaucotalk/database/auth_service.dart';
-import 'package:glaucotalk/pages/chat/chat_page.dart';
+import 'package:glaucotalk/pages/chat_page.dart';
 import 'package:glaucotalk/pages/profile_page.dart';
 import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/settings/Notification%20page/noti_page.dart';

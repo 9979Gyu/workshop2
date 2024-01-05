@@ -1,9 +1,9 @@
-import 'package:workshop2/components/Theme_Button.dart';
-import 'package:workshop2/components/box.dart';
-import 'package:workshop2/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/components/Theme_Button.dart';
+import 'package:glaucotalk/components/box.dart';
+import 'package:glaucotalk/pages/home_page.dart';
+import 'package:glaucotalk/pages/settings/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:workshop2/pages/setting/theme/theme_provider.dart';
 
 class ThemePage extends StatelessWidget {
   const ThemePage({super.key});

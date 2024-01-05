@@ -1,4 +1,3 @@
-import 'package:workshop2/pages/setting/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 
 ThemeData lightMode = ThemeData(

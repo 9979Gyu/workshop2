@@ -1,4 +1,3 @@
-import 'package:workshop2/pages/setting/Notification%20page/notifications.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotifications{
