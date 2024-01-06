@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:glaucotalk/camera/camera.dart';
+import 'package:glaucotalk/camera/vol_camera.dart';
 import 'package:glaucotalk/pages/chat_page.dart';
 import 'package:glaucotalk/pages/profile_page.dart';
 import 'package:glaucotalk/pages/search.dart';
@@ -13,9 +13,19 @@ import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
 import 'package:glaucotalk/pages/setting/account_center.dart';
 import 'package:glaucotalk/pages/setting/help_center.dart';
 import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
-import 'package:glaucotalk/pages/status/statuspage.dart';
+import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
+import 'package:glaucotalk/pages/setting/vol_accountCenter.dart';
+import 'package:glaucotalk/pages/setting/vol_help_center.dart';
+import 'package:glaucotalk/pages/status/story_page.dart';
+import 'package:glaucotalk/pages/status/vol_addStory.dart';
+import 'package:glaucotalk/pages/status/volunteer_statusPage.dart';
+import 'package:glaucotalk/pages/vol_chat_page.dart';
+import 'package:glaucotalk/pages/vol_profile_page.dart';
+import 'package:glaucotalk/pages/volunteer_search.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../autherization/user/login_user.dart';
+import '../autherization/volunteer/login_volunteer.dart';
 import '../database/auth_service.dart';
 
 
@@ -52,7 +62,7 @@ class _VolHomePageState extends State<VolHomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TakePictureScreen(
+        builder: (context) => VolTakePictureScreen(
           camera: camera!,
           onSavePicture: (XFile? xFile) {},
           //onSavePicture: savePictureToStorage,
@@ -140,47 +150,19 @@ class _VolHomePageState extends State<VolHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isNightMode = Provider.of<ThemeProvider>(context).themeData.brightness == Brightness.dark;
     return DefaultTabController(
         length: 2,
     child: Scaffold(
-      backgroundColor: Colors.blueAccent[100],
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.blueAccent,
-        color: Colors.grey.shade200,
-        items: const [
-          Icon(Icons.chat_bubble, color: Colors.lightBlueAccent),
-          Icon(Icons.favorite, color: Colors.lightBlueAccent),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-            // Handle navigation to ChatPage
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => VolHomePage()),
-              );
-              break;
-            case 1:
-            // Handle navigation to StatusPage
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const StatusPage(userId: '')),
-              );
-              break;
-            default:
-              break;
-          }
-        },
-      ),
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent[100],
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: Center(
           child: Text(
-            "Chat",
+            "Message",
             style: GoogleFonts.aBeeZee(
               textStyle: const TextStyle(
-                color: Colors.white70,
+
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
@@ -194,14 +176,14 @@ class _VolHomePageState extends State<VolHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SearchPage(),
+                  builder: (context) => const VolSearchPage(),
                 ),
               );
             },
             icon: const Icon(
               Icons.search_sharp,
               size: 20,
-              color: Colors.white70,
+
             ),
           ),
           IconButton(
@@ -210,7 +192,7 @@ class _VolHomePageState extends State<VolHomePage> {
             },
             icon: const Icon(
               Icons.camera_alt,
-              color: Colors.white,),
+              ),
           ),
         ],
       ),
@@ -218,27 +200,54 @@ class _VolHomePageState extends State<VolHomePage> {
       body: TabBarView(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Display user's name and email
-              Column(
-                children: [
-                  // Display current users name
-                  Text(
-                    'Logged in as ${nameController.text}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: myTextColor,
-                    ),
+              // Title 'Stories'
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Stories',
+                  style: TextStyle(
+
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  // Display current users email
-                  Text(
-                    '${emailController.text}',
-                    style: TextStyle(
+                ),
+              ),
+
+              // Story View (Added as the second child in TabBarView)
+              Container(
+                height: 85, // Adjust height as needed
+                child: VolStatusPage(userId: '',), // Replace 'YourStoryViewWidget()' with your story view implementation
+              ),
+
+              // Display user's name and email
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+                  crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+                  children: [
+                    // Display current user's name
+                    Text(
+                      'Logged in as ${nameController.text}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+
+                      ),
+                      textAlign: TextAlign.center, // Center text within the column
+                    ),
+                    // Display current user's email
+                    Text(
+                      '${emailController.text}',
+                      style: TextStyle(
                         fontSize: 14,
-                        color: myTextColor),
-                  )
-                ],
+
+                      ),
+                      textAlign: TextAlign.center, // Center text within the column
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: _buildUserList(),
@@ -247,10 +256,26 @@ class _VolHomePageState extends State<VolHomePage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const VolAddStoryPage(),
+            ),
+          );
+        },
+        backgroundColor: Colors.blueAccent[700],
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 35,
+        ),
+      ),
 
       // Add a drawer for a sidebar navigation
       drawer: Drawer(
-        backgroundColor: Colors.blueAccent[100],
+        backgroundColor: Theme.of(context).colorScheme.background,
         child: ListView(
           padding: const EdgeInsets.all(8.0),
           children: [
@@ -278,7 +303,7 @@ class _VolHomePageState extends State<VolHomePage> {
                             nameController.text,
                             style: const TextStyle(
                               fontSize: 20,
-                              color: Color(0xF6F5F5FF),
+
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -286,7 +311,7 @@ class _VolHomePageState extends State<VolHomePage> {
                             '@${usernameController.text}',
                             style: const TextStyle(
                               fontSize: 18,
-                              color: Color(0xF6F5F5FF),
+
                             ),
                           ),
                           const SizedBox(height: 8,),
@@ -298,7 +323,7 @@ class _VolHomePageState extends State<VolHomePage> {
                                 bool result = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                    builder: (context) => const ProfilePage(),
+                                    builder: (context) => const VolProfilePage(),
                                     ),
                                 );
 
@@ -340,13 +365,13 @@ class _VolHomePageState extends State<VolHomePage> {
               leading: const Icon(
                 Icons.account_circle_rounded,
                 size: 40,
-                color: Colors.white70,
+
               ),
               title: Text(
                 'Account',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-                    color: Colors.white70,
+
                     fontSize: 30,
                     fontWeight: FontWeight.w600
                   ),
@@ -360,7 +385,7 @@ class _VolHomePageState extends State<VolHomePage> {
                  Navigator.pop(context);
                  Navigator.push(context,
                    MaterialPageRoute(
-                       builder: (context) => const SettingPageUI()
+                       builder: (context) => const VolSettingPageUI()
                    ),
                  );
                },
@@ -371,14 +396,14 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.app_settings_alt_outlined,
-                color: Color(0xF6F5F5FF),
+
                 size: 40,
               ),
               title: Text(
                 'Appearance',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-                      color: Colors.white70,
+
                       fontSize: 30,
                       fontWeight: FontWeight.w600
                   ),
@@ -403,14 +428,14 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.chat_outlined,
-                color: Color(0xF6F5F5FF),
+
                 size: 40,
               ),
               title: Text(
                 'Chats',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-                      color: Colors.white70,
+
                       fontSize: 30,
                       fontWeight: FontWeight.w600
                   ),
@@ -430,14 +455,14 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.notifications_active_outlined,
-                color: Color(0xF6F5F5FF),
+
                 size: 40,
               ),
               title: Text(
                 'Notifications',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-                      color: Colors.white70,
+
                       fontSize: 30,
                       fontWeight: FontWeight.w600
                   ),
@@ -462,14 +487,14 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.question_mark_outlined,
-                color: Color(0xF6F5F5FF),
+
                 size: 40,
               ),
               title: Text(
                 'Help',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-                      color: Colors.white70,
+
                       fontSize: 30,
                       fontWeight: FontWeight.w600
                   ),
@@ -483,7 +508,7 @@ class _VolHomePageState extends State<VolHomePage> {
                 Navigator.pop(context);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) {
-                      return const HelpCenter();
+                      return const VolHelpCenter();
                     },
                       settings: const RouteSettings(name: 'HelpCenter',),
                     )
@@ -496,14 +521,14 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.exit_to_app_outlined,
-                color: Color(0xF6F5F5FF),
+
                 size: 40,
               ),
               title: Text(
                 'Sign Out',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-                      color: Colors.white70,
+
                       fontSize: 30,
                       fontWeight: FontWeight.w600
                   ),
@@ -604,13 +629,13 @@ class _VolHomePageState extends State<VolHomePage> {
       ),
         title: Text(
           data['name'],
-          style: TextStyle(color: myTextColor, fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
         onTap: (){
           // pass the clicked user's UID to the chat page
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatPage(
+            MaterialPageRoute(builder: (context) => VolChatPage(
               receiverName: data['name'] ?? '',
               receiverUserID: document.id?? '',
               senderprofilePicUrl: data['profilePicUrl'] ?? '',

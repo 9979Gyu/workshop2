@@ -1,3 +1,5 @@
+//story_page.dart
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -102,7 +104,21 @@ class _StoryPageState extends State<StoryPage> {
               return items;
             }).toList().cast<List<StoryItem>>();
 
-            return PageView.builder(
+            return Stack(
+              children: [
+              // Your StoryView or PageView.builder here
+              Positioned(
+              top: 40,
+              right: 20,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the current page
+                },
+                icon: Icon(Icons.close),
+              ),
+            ),
+
+            PageView.builder(
               itemCount: allUsersStories.length,
               controller: PageController(
                 initialPage: currentStoryIndex,
@@ -130,7 +146,10 @@ class _StoryPageState extends State<StoryPage> {
                   // Additional configurations and callbacks as needed
                 );
               },
+            ),
+            ],
             );
+
           },
         ),
       ),

@@ -1,44 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/setting/change_password.dart';
+import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
+import 'package:glaucotalk/pages/setting/vol_changePassword.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../volunteer_homepage.dart';
 
 
-class SettingPageUI extends StatefulWidget {
-  const SettingPageUI({super.key});
+class VolSettingPageUI extends StatefulWidget {
+  const VolSettingPageUI({super.key});
 
   @override
-  _SettingPageUIState createState() => _SettingPageUIState();
+  _VolSettingPageUIState createState() => _VolSettingPageUIState();
 }
 
-class _SettingPageUIState extends State<SettingPageUI> {
+class _VolSettingPageUIState extends State<VolSettingPageUI> {
   Color myCustomColor = const Color(0xFF00008B);
   Color myTextColor = const Color(0xF6F5F5FF);
 
 
   @override
   Widget build(BuildContext context) {
+    bool isNightMode = Provider.of<ThemeProvider>(context).themeData.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: myCustomColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.black54,
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(
-            "Account",
-            style: GoogleFonts.aBeeZee(
-                textStyle: TextStyle(
-                fontSize: 25,
-                color: myTextColor,
-                  fontWeight: FontWeight.bold,
-                ),),),
+          "Account",
+          style: GoogleFonts.aBeeZee(
+            textStyle: TextStyle(
+              fontSize: 25,
+
+              fontWeight: FontWeight.bold,
+            ),),),
         leading: IconButton(
           onPressed: () {
             Navigator.push(
                 context,
-            MaterialPageRoute(builder: (context) => HomePage()));
+                MaterialPageRoute(builder: (context) => VolHomePage()));
           },
           icon: const Icon(
             Icons.arrow_back,
-            color: Colors.white,
+
           ),
         ),
       ),
@@ -46,20 +53,21 @@ class _SettingPageUIState extends State<SettingPageUI> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            const SizedBox(height: 40),
-              Row(
+            const SizedBox(height: 20),
+            Row(
               children: [
                 const Icon(
                   Icons.person_3_rounded,
-                  color: Colors.white,
+                  color: Colors.blue,
+
                 ),
-                const SizedBox(width: 30),
+                const SizedBox(width: 20),
                 Text(
-                    "Account Center",
+                  "Account Center",
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
-                      fontSize: 25,
-                      color: myTextColor,
+                      fontSize: 22,
+
                       fontWeight: FontWeight.bold,
                     ),),),
               ],
@@ -81,7 +89,7 @@ class _SettingPageUIState extends State<SettingPageUI> {
           context,
           MaterialPageRoute(
               builder: (context)
-                => const ChangePasswordScreen()),
+              => const VolChangePasswordScreen()),
         );
       },
       child: Padding(
@@ -90,16 +98,16 @@ class _SettingPageUIState extends State<SettingPageUI> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-                title,
-                style: GoogleFonts.aBeeZee(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: myTextColor,
-                    fontWeight: FontWeight.bold,
-                  ),),),
+              title,
+              style: GoogleFonts.aBeeZee(
+                textStyle: TextStyle(
+                  fontSize: 20,
+
+                  fontWeight: FontWeight.bold,
+                ),),),
             const Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.white)
+                )
           ],
         ),
       ),
