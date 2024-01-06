@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -9,10 +9,10 @@ import 'package:glaucotalk/camera/camera.dart';
 import 'package:glaucotalk/pages/chat_page.dart';
 import 'package:glaucotalk/pages/profile_page.dart';
 import 'package:glaucotalk/pages/search.dart';
-import 'package:glaucotalk/pages/settings/Notification%20page/noti_page.dart';
-import 'package:glaucotalk/pages/settings/account_center.dart';
-import 'package:glaucotalk/pages/settings/help_center.dart';
-import 'package:glaucotalk/pages/settings/theme/Apparance.dart';
+import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
+import 'package:glaucotalk/pages/setting/account_center.dart';
+import 'package:glaucotalk/pages/setting/help_center.dart';
+import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
 import 'package:glaucotalk/pages/status/statuspage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../autherization/user/login_user.dart';
@@ -581,9 +581,27 @@ class _VolHomePageState extends State<VolHomePage> {
   Widget _buildUserListItem(DocumentSnapshot document){
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
+    // Using a ValueNotifier to handle image loading state
+    ValueNotifier<bool> useDefaultImage = ValueNotifier<bool>(false);
+
+    // Check if a profile picture URL is available
+    String? profilePictureUrl = data['profilePictureUrl'] ?? '';
+
+    // // If no URL available, set to use default image to true
+    // if (profilePictureUrl.isEmpty){
+    //   useDefaultImage.value = true;
+    // }
+    //
+
     // display all users except current user
     if(_auth.currentUser!.email != data['email']){
       return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: profilePictureUrl != null && profilePictureUrl.isNotEmpty
+            ? NetworkImage(profilePictureUrl)
+            : AssetImage('assets/logo.png') as ImageProvider,
+        backgroundColor: Colors.blueGrey,
+      ),
         title: Text(
           data['name'],
           style: TextStyle(color: myTextColor, fontSize: 18),

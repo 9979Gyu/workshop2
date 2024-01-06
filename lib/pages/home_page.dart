@@ -592,8 +592,8 @@ class _HomePageState extends State<HomePage> {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     bool isCurrentUser = _auth.currentUser!.email == data['name'];
     int status = data['status'] ?? 1; // Default to 1 (active) if status is not presented
-
-
+    // Check if a profile picture URL is available
+    String profilePictureUrl = data['profilePictureUrl'] ?? '';
 
     if(status == 1 &&_auth.currentUser!.email != data['name']){
       return Dismissible(
@@ -622,6 +622,12 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: profilePictureUrl.isNotEmpty
+                ? NetworkImage(profilePictureUrl)
+                : AssetImage('assets/logo.png') as ImageProvider,
+            backgroundColor: Colors.blueGrey,
+          ),
           title: Text(
             data['name'],
             style: TextStyle(
@@ -646,5 +652,4 @@ class _HomePageState extends State<HomePage> {
       return Container();
     }
   }
-
 }

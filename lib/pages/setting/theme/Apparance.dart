@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:glaucotalk/components/Theme_Button.dart';
 import 'package:glaucotalk/components/box.dart';
 import 'package:glaucotalk/pages/home_page.dart';
-import 'package:glaucotalk/pages/settings/theme/theme_provider.dart';
+import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ThemePage extends StatelessWidget {

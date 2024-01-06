@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:glaucotalk/database/auth_service.dart';
-import 'package:glaucotalk/pages/settings/Notification%20page/local_notifications.dart';
-import 'package:glaucotalk/pages/settings/theme/theme_provider.dart';
+import 'package:glaucotalk/pages/setting/Notification%20page/local_notifications.dart';
+import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'database/firebase_api.dart';
 import 'firebase_options.dart';
