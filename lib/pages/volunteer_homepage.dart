@@ -6,17 +6,11 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/camera/vol_camera.dart';
-import 'package:glaucotalk/pages/chat_page.dart';
-import 'package:glaucotalk/pages/profile_page.dart';
-import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
-import 'package:glaucotalk/pages/setting/account_center.dart';
-import 'package:glaucotalk/pages/setting/help_center.dart';
 import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
 import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
 import 'package:glaucotalk/pages/setting/vol_accountCenter.dart';
 import 'package:glaucotalk/pages/setting/vol_help_center.dart';
-import 'package:glaucotalk/pages/status/story_page.dart';
 import 'package:glaucotalk/pages/status/vol_addStory.dart';
 import 'package:glaucotalk/pages/status/volunteer_statusPage.dart';
 import 'package:glaucotalk/pages/vol_chat_page.dart';
@@ -25,7 +19,6 @@ import 'package:glaucotalk/pages/volunteer_search.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../autherization/user/login_user.dart';
-import '../autherization/volunteer/login_volunteer.dart';
 import '../database/auth_service.dart';
 
 
@@ -81,7 +74,7 @@ class _VolHomePageState extends State<VolHomePage> {
   void initState() {
     super.initState();
     // Initialize firstCamera in the initState method
-    _initializeFirstCamera();
+    //_initializeFirstCamera();
     // call fetchUserData to get user data
     fetchUserData();
     // Schedule a microtask
@@ -98,21 +91,21 @@ class _VolHomePageState extends State<VolHomePage> {
     super.dispose();
   }
 
-  Future<void> _initializeFirstCamera() async {
-    final cameras = await availableCameras();
-    if (cameras.isNotEmpty) {
-      setState(() {
-        firstCamera = cameras.first;
-      });
-    } else {
-      // handle the case when there is no camera available
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No Camera Available'),
-        ),
-      );
-    }
-  }
+  // Future<void> _initializeFirstCamera() async {
+  //   final cameras = await availableCameras();
+  //   if (cameras.isNotEmpty) {
+  //     setState(() {
+  //       firstCamera = cameras.first;
+  //     });
+  //   } else {
+  //     // handle the case when there is no camera available
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('No Camera Available'),
+  //       ),
+  //     );
+  //   }
+  // }
 
   // sign user out
   void signOut() {
@@ -162,8 +155,7 @@ class _VolHomePageState extends State<VolHomePage> {
             "Message",
             style: GoogleFonts.aBeeZee(
               textStyle: const TextStyle(
-
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -186,14 +178,14 @@ class _VolHomePageState extends State<VolHomePage> {
 
             ),
           ),
-          IconButton(
-            onPressed: () {
-              navigateToTakePictureScreen(context, firstCamera!);
-            },
-            icon: const Icon(
-              Icons.camera_alt,
-              ),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     navigateToTakePictureScreen(context, firstCamera!);
+          //   },
+          //   icon: const Icon(
+          //     Icons.camera_alt,
+          //     ),
+          // ),
         ],
       ),
 
@@ -203,12 +195,11 @@ class _VolHomePageState extends State<VolHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title 'Stories'
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Stories',
                   style: TextStyle(
-
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -218,7 +209,7 @@ class _VolHomePageState extends State<VolHomePage> {
               // Story View (Added as the second child in TabBarView)
               Container(
                 height: 85, // Adjust height as needed
-                child: VolStatusPage(userId: '',), // Replace 'YourStoryViewWidget()' with your story view implementation
+                child: const VolStatusPage(userId: '',), // Replace 'YourStoryViewWidget()' with your story view implementation
               ),
 
               // Display user's name and email
@@ -230,19 +221,17 @@ class _VolHomePageState extends State<VolHomePage> {
                     // Display current user's name
                     Text(
                       'Logged in as ${nameController.text}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-
                       ),
                       textAlign: TextAlign.center, // Center text within the column
                     ),
                     // Display current user's email
                     Text(
                       '${emailController.text}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-
                       ),
                       textAlign: TextAlign.center, // Center text within the column
                     ),
@@ -364,15 +353,13 @@ class _VolHomePageState extends State<VolHomePage> {
              ListTile(
               leading: const Icon(
                 Icons.account_circle_rounded,
-                size: 40,
-
+                size: 25,
               ),
               title: Text(
                 'Account',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-
-                    fontSize: 30,
+                    fontSize: 25,
                     fontWeight: FontWeight.w600
                   ),
                 ),
@@ -396,15 +383,13 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.app_settings_alt_outlined,
-
-                size: 40,
+                size: 25,
               ),
               title: Text(
                 'Appearance',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w600
                   ),
                 ),
@@ -428,15 +413,13 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.chat_outlined,
-
-                size: 40,
+                size: 25,
               ),
               title: Text(
                 'Chats',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w600
                   ),
                 ),
@@ -455,15 +438,13 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.notifications_active_outlined,
-
-                size: 40,
+                size: 25,
               ),
               title: Text(
                 'Notifications',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w600
                   ),
                 ),
@@ -487,15 +468,13 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.question_mark_outlined,
-
-                size: 40,
+                size: 25,
               ),
               title: Text(
                 'Help',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w600
                   ),
                 ),
@@ -521,15 +500,13 @@ class _VolHomePageState extends State<VolHomePage> {
             ListTile(
               leading: const Icon(
                 Icons.exit_to_app_outlined,
-
-                size: 40,
+                size: 25,
               ),
               title: Text(
                 'Sign Out',
                 style: GoogleFonts.robotoCondensed(
                   textStyle: const TextStyle(
-
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w600
                   ),
                 ),
@@ -620,16 +597,23 @@ class _VolHomePageState extends State<VolHomePage> {
 
     // display all users except current user
     if(_auth.currentUser!.email != data['email']){
-      return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: profilePictureUrl != null && profilePictureUrl.isNotEmpty
+      return Container(
+          decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ListTile(
+          leading: CircleAvatar(
+          backgroundImage: profilePictureUrl != null && profilePictureUrl.isNotEmpty
             ? NetworkImage(profilePictureUrl)
-            : AssetImage('assets/logo.png') as ImageProvider,
-        backgroundColor: Colors.blueGrey,
+            : const AssetImage('assets/logo.png') as ImageProvider,
+          backgroundColor: Colors.blueGrey,
       ),
         title: Text(
           data['name'],
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18, color: Colors.black,),
         ),
         onTap: (){
           // pass the clicked user's UID to the chat page
@@ -643,6 +627,7 @@ class _VolHomePageState extends State<VolHomePage> {
             ),
           );
         },
+       ),
       );
     } else{
       // Return empty container

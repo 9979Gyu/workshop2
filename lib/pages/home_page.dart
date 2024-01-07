@@ -111,6 +111,44 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> updateUserStatus() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    try{
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userDoc.exists) {
+        int status = userDoc['status'] ?? 1; //default if status is not initialized
+
+        if (status == 0) {
+          // Update the user's status to 1 (active) if current is 0 (inactive)
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .update({'status': 1});
+
+          // updage local status variable if needed
+          setState(() {
+            status = 1;
+          });
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+            const SnackBar(
+              content: Text(
+                  "Status have been changed"),
+            ),
+          );
+        }
+      }
+    } catch (error){
+      print("Unable to change the status: $error");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -124,6 +162,8 @@ class _HomePageState extends State<HomePage> {
       const Duration(minutes: 1),
           (timer) => setState(() {}),
     );
+    // Call the updateUserStatus when the user logs in
+    updateUserStatus();
   }
 
   @override
@@ -210,13 +250,15 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: Colors.black54,
-          title: Text(
-            'C H A T ',
-            style: GoogleFonts.poppins(
-              textStyle: const TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 24,
-                color: Colors.yellow,
+          title: Center(
+            child: Text(
+              'C H A T ',
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 30,
+                  color: myTextColor,
+                ),
               ),
             ),
           ),
@@ -596,12 +638,23 @@ class _HomePageState extends State<HomePage> {
     String profilePictureUrl = data['profilePictureUrl'] ?? '';
 
     if(status == 1 &&_auth.currentUser!.email != data['name']){
-      return Dismissible(
-        key: Key(document.id), // Unique key for Dismissible
-        background: Container(
-          color: Colors.red,
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20.0),
+      return Container(
+          decoration: BoxDecoration(
+          color: Colors.indigo,
+          borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.white, // Replace myBorderColor with your desired border color
+              width: 2.0, // Adjust the width as needed
+            ),
+    ),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Dismissible(
+          key: Key(document.id), // Unique key for Dismissible
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20.0),
           child: const Icon(
               Icons.delete,
               color: Colors.white),
@@ -625,7 +678,7 @@ class _HomePageState extends State<HomePage> {
           leading: CircleAvatar(
             backgroundImage: profilePictureUrl.isNotEmpty
                 ? NetworkImage(profilePictureUrl)
-                : AssetImage('assets/logo.png') as ImageProvider,
+                : const AssetImage('assets/logo.png') as ImageProvider,
             backgroundColor: Colors.blueGrey,
           ),
           title: Text(
@@ -646,6 +699,7 @@ class _HomePageState extends State<HomePage> {
               )),
             );
           },
+        ),
         ),
       );
     } else {

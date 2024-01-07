@@ -24,6 +24,8 @@ class _ChatPageState extends State<ChatPage> {
   final String receiverUserID;
 
   _ChatPageState({required this.receiverUserID});
+  Color myCustomColor = const Color(0xFF00008B);
+  Color myTextColor = const Color(0xF6F5F5FF);
 
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
@@ -53,11 +55,15 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.indigo[300],
+      backgroundColor: myCustomColor,
       appBar: AppBar(
-        title: Text(widget.receiverName,
-          style: const TextStyle(color: Colors.white),),
-        backgroundColor: Colors.indigo[900],),
+        title: Center(
+          child: Text(
+            widget.receiverName,
+            style: const TextStyle(
+                color: Colors.white),),
+        ),
+        backgroundColor: Colors.black54,),
       body: Column(
         children: [
           // Messages
@@ -190,9 +196,9 @@ class _ChatPageState extends State<ChatPage> {
               onPressed: sendMessage,
               icon:
               const Icon(
-                Icons.send,
+                Icons.telegram_outlined,
                 size: 40,
-                color: Colors.black,))
+                color: Colors.white,))
         ],
       ),
     );
