@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 
-import '../autherization/user/login_user.dart';
-import '../autherization/volunteer/login_volunteer.dart';
+import '../authorization/user/login_user.dart';
+import '../authorization/volunteer/login_volunteer.dart';
 import 'database_service.dart';
 
 class AuthService extends ChangeNotifier{

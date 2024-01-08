@@ -9,6 +9,7 @@ import 'package:camera/camera.dart';
 import 'package:glaucotalk/camera/camera.dart';
 import 'package:glaucotalk/database/auth_service.dart';
 import 'package:glaucotalk/pages/chat_page.dart';
+import 'package:glaucotalk/pages/main_menu.dart';
 import 'package:glaucotalk/pages/profile_page.dart';
 import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
@@ -16,12 +17,10 @@ import 'package:glaucotalk/pages/setting/account_center.dart';
 import 'package:glaucotalk/pages/setting/help_center.dart';
 import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
 import 'package:glaucotalk/pages/status/statuspage.dart';
-import 'package:glaucotalk/pages/view/image_classification.dart';
+import 'package:glaucotalk/pages/image_classification.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
-
-import '../autherization/user/login_user.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -594,7 +593,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LoginPage(onTap: () {})));
+                            builder: (context) => MainMenu()));
                   }
                   catch (e){
                     print("Error signing out: ${e}");
@@ -694,7 +693,7 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(builder: (context) => ChatPage(
                 receiverName: data['name']?? '',
-                receiverUserID: document.id?? '',
+                receiverUserID: document.id,
                 senderprofilePicUrl: data['profilePicUrl']?? '',
               )),
             );

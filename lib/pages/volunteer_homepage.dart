@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/camera/vol_camera.dart';
@@ -18,8 +17,8 @@ import 'package:glaucotalk/pages/vol_profile_page.dart';
 import 'package:glaucotalk/pages/volunteer_search.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../autherization/user/login_user.dart';
 import '../database/auth_service.dart';
+import 'main_menu.dart';
 
 
 class VolHomePage extends StatefulWidget {
@@ -542,7 +541,7 @@ class _VolHomePageState extends State<VolHomePage> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => LoginPage(onTap: () {})),
+                          builder: (context) => MainMenu()),
                           (Route<dynamic> route) => false,
                     );
                   } catch (e) {
@@ -621,7 +620,7 @@ class _VolHomePageState extends State<VolHomePage> {
             context,
             MaterialPageRoute(builder: (context) => VolChatPage(
               receiverName: data['name'] ?? '',
-              receiverUserID: document.id?? '',
+              receiverUserID: document.id,
               senderprofilePicUrl: data['profilePicUrl'] ?? '',
             ),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glaucotalk/autherization/user/login_user.dart';
-import 'package:glaucotalk/autherization/user/register_user.dart';
+import 'package:glaucotalk/authorization/user/login_user.dart';
+import 'package:glaucotalk/authorization/user/register_user.dart';
 
 class LoginOrRegister extends StatefulWidget {
   const LoginOrRegister({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glaucotalk/autherization/user/login_user.dart';
-import 'package:glaucotalk/autherization/volunteer/login_volunteer.dart';
+import 'package:glaucotalk/authorization/user/login_user.dart';
+import 'package:glaucotalk/authorization/volunteer/login_volunteer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainMenu extends StatefulWidget {
@@ -60,8 +60,6 @@ class _MainMenuState extends State<MainMenu> {
                       shape:  RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      // change color when pressed
-                      onPrimary: Colors.indigo[900],
                     ),
                     child: const Text(
                       "I need virtual assistance",
@@ -91,8 +89,6 @@ class _MainMenuState extends State<MainMenu> {
                       shape:  RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      // change color when pressed
-                      onPrimary: Colors.indigo[900],
                     ),
                     child: const Text(
                       "I would like to volunteer",
