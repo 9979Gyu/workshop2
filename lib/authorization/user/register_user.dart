@@ -9,7 +9,7 @@ import 'package:glaucotalk/pages/main_menu.dart';
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
 
-  const RegisterPage({Key? key, required this.onTap}) : super(key: key);
+  RegisterPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -157,6 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: myCustomColor,
       appBar: AppBar(

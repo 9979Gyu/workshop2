@@ -153,7 +153,12 @@ class _ChatPageState extends State<ChatPage> {
                       child: Column(
                         crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                         children: [
-                          Text(data['senderEmail']),
+                          Text(
+                            data['senderEmail'],
+                            style: TextStyle(
+                              color: myTextColor
+                            )
+                          ),
                           const SizedBox(height: 8),
                           ChatBubble(message: data['message']),
                           const SizedBox(width: 5),
@@ -187,6 +192,7 @@ class _ChatPageState extends State<ChatPage> {
             child: MyTextField(
               controller: _messageController,
               hintText: 'Enter Message',
+
               obscureText: false,
             ),
           ),

@@ -80,7 +80,6 @@ dependencies {
     // Also add the dependency for the Google Play services library and specify its version
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.firebase:firebase-analytics")
-    implementation 'com.google.android.gms:play-services-auth:20.7.0'
     implementation 'androidx.window:window:1.2.0'
     implementation 'androidx.window:window-java:1.2.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'

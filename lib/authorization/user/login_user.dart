@@ -5,6 +5,7 @@ import 'package:glaucotalk/authorization/forgot_password.dart';
 import 'package:glaucotalk/authorization/user/register_user.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../pages/main_menu.dart';
@@ -112,6 +113,27 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // Function to handle sign in with google account
+  Future<dynamic> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+
+    }
+    catch (e) {
+      print('Failed to login with gmail: $e');
+    }
+  }
+
   // show error message to user
   void showErrorMessage(String message) {
     showDialog(
@@ -146,6 +168,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    ValueNotifier userCredential = ValueNotifier('');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: myCustomColor,
@@ -320,6 +344,84 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 15),
+
+                ValueListenableBuilder(
+                  valueListenable: userCredential,
+                  builder: (context, value, child) {
+                    return (userCredential.value == '' ||
+                        userCredential.value == null) ? Center(
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: IconButton(
+                          iconSize: 40,
+                          icon: Image.asset(
+                            'assets/google.png',
+                            width: 50,
+                            height: 50,
+                          ),
+                          onPressed: () async {
+                            userCredential.value = await signInWithGoogle();
+                            if (userCredential.value != null){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      HomePage.loginWithGoogle(
+                                        userCredential.value
+                                      ),
+                                  ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ) : Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    width: 1.5,
+                                    color: Colors.black54
+                                )
+                            ),
+                            child: Image.network(
+                                userCredential.value.user!.photoURL.toString()
+                            ),
+                          ),
+
+                          // const SizedBox(height: 20,),
+                          //
+                          // Text(
+                          //     userCredential.value.user!.displayName.toString()
+                          // ),
+                          //
+                          // const SizedBox(height: 20,),
+                          //
+                          // Text(userCredential.value.user!.email.toString()),
+                          //
+                          // const SizedBox(height: 30,),
+                          //
+                          // ElevatedButton(
+                          //     onPressed: () async {
+                          //       bool result = await signOutFromGoogle();
+                          //       if (result)
+                          //         userCredential.value = '';
+                          //     },
+                          //     child: const Text('Logout')
+                          // )
+                        ],
+                      ),
+                    );
+                  }
+                ),
+
                 const SizedBox(height: 25),
 
                 // doesn't have an account
@@ -351,6 +453,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20,),
                   ],
                 )
               ],
