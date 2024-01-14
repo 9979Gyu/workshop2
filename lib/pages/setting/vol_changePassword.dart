@@ -94,7 +94,6 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
         title: Text(
           'Change Password',
           style: GoogleFonts.poppins(
-
           ),
         ),
         leading: IconButton(
@@ -103,7 +102,6 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
           },
           icon: const Icon(
             Icons.arrow_back,
-
           ),
         ),
       ),
@@ -119,19 +117,17 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  Text(
+                  const Text(
                     'Create New Password',
                     style: TextStyle(
-
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
+                  const Text(
                     "Your new password must be different \nfrom your previous password.",
                     style: TextStyle(
-
                       fontSize: 15,
                     ),
                   ),
@@ -139,13 +135,12 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
                         child: Text(
                           'Current Password',
                           style: TextStyle(
                             fontSize: 20,
-
                           ),
                         ),
                       ),
@@ -175,7 +170,6 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                             borderSide: const BorderSide(
-
                               width: 2.0,
                             ),
                           ),
@@ -195,13 +189,12 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
                         child: Text(
                           'New Password',
                           style: TextStyle(
                             fontSize: 20,
-
                           ),
                         ),
                       ),
@@ -231,7 +224,6 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                             borderSide: const BorderSide(
-
                               width: 2.0,
                             ),
                           ),
@@ -251,13 +243,12 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
                         child: Text(
                           'Confirm Password',
                           style: TextStyle(
                             fontSize: 20,
-
                           ),
                         ),
                       ),
@@ -287,7 +278,6 @@ class _VolChangePasswordScreenState extends State<VolChangePasswordScreen> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                             borderSide: const BorderSide(
-
                               width: 2.0,
                             ),
                           ),

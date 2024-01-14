@@ -144,6 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                                   MaterialPageRoute(
                                       builder: (context) => ChatPage(
                                           receiverName: userData['name'],
+                                          receiverIDuser: userData['IDuser'],
                                           receiverUserID:
                                           searchSnapshot!.docs[index].id,
                                           senderprofilePicUrl:

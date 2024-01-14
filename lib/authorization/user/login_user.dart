@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/authorization/forgot_password.dart';
 import 'package:glaucotalk/authorization/user/register_user.dart';
+import 'package:glaucotalk/database/notification/notification_service.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../pages/main_menu.dart';
@@ -28,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   String email ="";
   String password = "";
   String displayName = "";
+//  static final notification = NotificationsService();
 
   bool isPasswordVisible = false;
 
@@ -57,6 +60,10 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
 
+      // baru add
+      // await notification.requestPermission();
+      // await notification.getToken();
+
       // Fetch user role from Firestore
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -71,6 +78,17 @@ class _LoginPageState extends State<LoginPage> {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('email', emailController.text.trim());
 
+        //final SharedPreferences prefs = await SharedPreferences.getInstance();
+        String username = emailController.text.trim(); // You can change this to your username logic if needed
+
+      //  String id = userDoc['userId'];// Assuming userId is a String
+        String id = userDoc['IDuser'];// Assuming userId is a String
+        String usertype = userDoc['name']; // Replace 'userType' with your field name
+
+
+        // OneSignal login
+       //OneSignal.login(id);
+        OneSignal.login(id);
 
         // pop loading circle before user logged in
         Navigator.pop(context);

@@ -6,15 +6,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:glaucotalk/authorization/user/login_user.dart';
 import 'package:glaucotalk/camera/camera.dart';
 import 'package:glaucotalk/database/auth_service.dart';
+import 'package:glaucotalk/database/chat/chat_service.dart';
 import 'package:glaucotalk/pages/chat_page.dart';
-import 'package:glaucotalk/pages/main_menu.dart';
 import 'package:glaucotalk/pages/profile_page.dart';
 import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
 import 'package:glaucotalk/pages/setting/account_center.dart';
 import 'package:glaucotalk/pages/setting/help_center.dart';
+import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
 import 'package:glaucotalk/pages/status/statuspage.dart';
 import 'package:glaucotalk/pages/image_classification.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +42,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Timer timer;
   String profilePictureUrl ='';
-
+  late ChatService _chatService;
   TextEditingController nameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -97,20 +99,25 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // void updateUserPresence() {
+  //   ref.read(authControllerProvider).updateUserPresence();
+  // }
+
   //Function to navigate to TakePictureScreen
+
   void navigateToTakePictureScreen(
       BuildContext context, CameraDescription camera){
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => TakePictureScreen(
-              camera: camera,
+        builder: (context) => TakePictureScreen(
+            camera: camera,
             onSavePicture: (XFile? image) async {
               if (image != null) {
                 await savePictureToStorage(image);
               }
             }
-          ),
+        ),
       ),
     );
   }
@@ -168,6 +175,7 @@ class _HomePageState extends State<HomePage> {
     );
     // Call the updateUserStatus when the user logs in
     updateUserStatus();
+    _chatService = ChatService();
   }
 
   @override
@@ -219,7 +227,7 @@ class _HomePageState extends State<HomePage> {
 
           // set the profile pictrue URL from firestore
           profilePictureUrl = userDoc['profilePictureUrl'];
-
+          // set other fields similarity
         });
 
       }
@@ -291,9 +299,16 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.search,
                 size: 27,
                 color: Colors.white,
-
               ),
             ),
+            // IconButton(
+            //   onPressed: () {
+            //     navigateToTakePictureScreen(context, firstCamera!);
+            //   },
+            //   icon: const Icon(
+            //     Icons.camera_alt,
+            //     color: Colors.white,),
+            // ),
           ],
 
           bottom: const TabBar(
@@ -475,6 +490,33 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 8,),
 
+
+              ListTile(
+                leading: const Icon(
+                  Icons.app_settings_alt_outlined,
+                  color: Color(0xF6F5F5FF),
+                  size: 40,
+                ),
+                title: const Text(
+                  'Appearance',
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Color(0xF6F5F5FF),),
+                ),
+                selected: _selectedIndex == 1,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(1);
+                  // Then close the drawer
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => const ThemePage()
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8,),
               ListTile(
                 leading: const Icon(
                   Icons.chat_outlined,
@@ -507,7 +549,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 28,
                     color: Color(0xF6F5F5FF),),
                 ),
-                selected: _selectedIndex == 2,
+                selected: _selectedIndex == 3,
                 onTap: () {
                   // Update the state of the app
                   _onItemTapped(3);
@@ -542,7 +584,8 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (_) {
                         return const HelpCenter();
                       },
-                        settings: const RouteSettings(name: 'HelpCenter',),
+                        settings: const RouteSettings(
+                          name: 'HelpCenter',),
                       )
                   );
                 },
@@ -561,21 +604,40 @@ class _HomePageState extends State<HomePage> {
                 ),
                 selected: _selectedIndex == 4,
                 onTap: () async {
-                  // Update the state of the app
-                  _onItemTapped(5);
-                  // Then close the drawer
-                  Navigator.pop(context);
+                  // Show confirmation dialog
+                  bool confirmLogout = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Sign Out'),
+                        content: const Text('Are you sure you want to sign out?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('Sign Out'),
+                          ),
+                        ],
+                      );
+                    },
+                  ) ?? false; // The ?? false is used in case the dialog is dismissed without any button being pressed
 
-                  try{
-                    await FirebaseAuth.instance.signOut();
-                    // Navigate to login page after signed out
-                    Navigator.push(
+                  // Check confirmation and perform sign out
+                  if (confirmLogout) {
+                    try {
+                      await FirebaseAuth.instance.signOut();
+                      // Navigate to login page after signed out
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => MainMenu()));
-                  }
-                  catch (e){
-                    print("Error signing out: ${e}");
+                        MaterialPageRoute(builder: (context) => LoginPage(onTap: () {})),
+                            (Route<dynamic> route) => false,
+                      );
+                    } catch (e) {
+                      print("Error signing out: $e");
+                    }
                   }
                 },
               ),
@@ -591,17 +653,18 @@ class _HomePageState extends State<HomePage> {
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot){
-        if(snapshot.hasError){
+      builder: (context, userSnapshot) {
+        if (userSnapshot.hasError) {
           return const Text('Error');
         }
-        if(snapshot.connectionState == ConnectionState.waiting){
-          return const Text('loading . . .');
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading...');
         }
 
         return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserListItem(doc)).toList(),
+          children: userSnapshot.data!.docs
+              .map<Widget>((doc) => _buildUserListItem(doc))
+              .toList(),
         );
       },
     );
@@ -610,75 +673,81 @@ class _HomePageState extends State<HomePage> {
   //build individual user list items
   Widget _buildUserListItem(DocumentSnapshot document){
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    bool isCurrentUser = _auth.currentUser!.email == (data['name']);
-
-    int status = data['status'] ?? 1; // Default to 1 (active) if status is not presented
-    // Check if a profile picture URL is available
+    bool isCurrentUser = _auth.currentUser!.email == data['name'];
+    int status = data['status'] ?? 1;
     String profilePictureUrl = data['profilePictureUrl'] ?? '';
 
-    if(status == 1 &&_auth.currentUser!.email != data['name']){
+    if(status == 1 && _auth.currentUser!.email != data['name']){
       return Container(
-          decoration: BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.indigo,
           borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white, // Replace myBorderColor with your desired border color
-              width: 2.0, // Adjust the width as needed
-            ),
-    ),
+          border: Border.all(color: Colors.white, width: 2.0),
+        ),
         margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Dismissible(
-          key: Key(document.id), // Unique key for Dismissible
+          key: Key(document.id),
           background: Container(
             color: Colors.red,
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20.0),
-          child: const Icon(
-              Icons.delete,
-              color: Colors.white),
-        ),
-        direction: DismissDirection.endToStart,
-        onDismissed: (direction) {
-          softDeleteUser(document.id);
-          // Below code is a permanent delete inside firestore
-          // FirebaseFirestore.instance
-          //     .collection('users')
-          //     .doc(document.id)
-          //     .delete();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
-            const SnackBar(
-              content: Text("Successfully deleted"),
-            ),
-          );
-        },
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundImage: profilePictureUrl.isNotEmpty
-                ? NetworkImage(profilePictureUrl)
-                : const AssetImage('assets/logo.png') as ImageProvider,
-            backgroundColor: Colors.blueGrey,
+            child: const Icon(Icons.delete, color: Colors.white),
           ),
-          title: Text(
-            data['name'] ?? "",
-            style: TextStyle(
-              color: isCurrentUser
-                  ? Colors.deepOrange : myTextColor,
-              fontSize: isCurrentUser ? 25.0 : 20.0,
-            ),
-          ),
-          onTap: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChatPage(
-                receiverName: data['name']?? '',
-                receiverUserID: document.id,
-                senderprofilePicUrl: data['profilePicUrl']?? '',
-              )),
+          direction: DismissDirection.endToStart,
+          onDismissed: (direction) {
+            softDeleteUser(document.id);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Successfully deleted")),
             );
           },
-        ),
+          // child: StreamBuilder<int>(
+          //   // Stream to get unread message count
+          //   //stream: _chatService.getUnreadMessageCount(document.id, _auth.currentUser!.uid),
+          //   builder: (context, unreadSnapshot) {
+          //     int unreadCount = unreadSnapshot.data ?? 0;
+
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: profilePictureUrl.isNotEmpty
+                      ? NetworkImage(profilePictureUrl)
+                      : const AssetImage('assets/logo.png') as ImageProvider,
+                  backgroundColor: Colors.blueGrey,
+                ),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      data['name'],
+                      style: TextStyle(
+                        color: isCurrentUser ? Colors.deepOrange : myTextColor,
+                        fontSize: isCurrentUser ? 25.0 : 20.0,
+                      ),
+                    ),
+                    // if (unreadCount > 0) // Display unread count badge
+                    //   CircleAvatar(
+                    //     child: Text(unreadCount.toString()),
+                    //     backgroundColor: Colors.red,
+                    //     radius: 12,
+                    //   ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                        receiverName: data['name'] ?? '',
+                        receiverIDuser: data['IDuser'] ?? '',
+                        receiverUserID: document.id,
+                        senderprofilePicUrl: data['profilePicUrl'] ?? '',
+                      ),
+                    ),
+                  );
+                },
+              //);
+           // },
+          ),
         ),
       );
     } else {

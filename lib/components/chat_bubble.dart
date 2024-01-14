@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
+  final bool isCurrentUser;
+  final double fontSize;
+
   const ChatBubble({
-    super.key,
-    required this.message
-  });
+    Key? key,
+    required this.message,
+    required this.isCurrentUser,
+    required this.fontSize,
+  }) : super(key:key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +18,14 @@ class ChatBubble extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.black,
+        color: isCurrentUser ? Colors.deepPurple[900] : Colors.black54,
       ),
       child: Text(
         message,
-        style: const TextStyle(fontSize: 16,
-        color: Colors.white),
+        style: TextStyle(
+            fontSize: fontSize,
+            color: Colors.white
+       ),
       ),
     );
   }

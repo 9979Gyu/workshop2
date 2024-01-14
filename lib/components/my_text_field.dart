@@ -15,18 +15,24 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      obscureText: obscureText, // to hide the character like password
+      obscureText: obscureText,
+      style: TextStyle(color: Colors.white),// to hide the character like password
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade200),
+          borderSide: BorderSide(
+              color: Colors.grey.shade200
+          ),
         ),
         focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)
+            borderSide: BorderSide(
+                color: Colors.white
+            ),
         ),
-        fillColor: Colors.deepPurpleAccent[400], // color dlm box
+        fillColor: Colors.black54, // color dlm box
         filled: true,
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white),
+        hintStyle: const TextStyle(
+            color: Colors.white),
       ),
 
     );

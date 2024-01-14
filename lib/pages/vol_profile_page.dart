@@ -167,11 +167,11 @@ class _VolProfilePageState extends State<VolProfilePage> {
       });
 
       // inform the user that the profile has been updated
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text('Profile update successfully'),
-      //   ),
-      // );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Profile update successfully'),
+        ),
+      );
     } catch(e){
       print(e);
     }
@@ -186,8 +186,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
         title: Text(
           "Edit Profile",
           style: GoogleFonts.poppins(
-            textStyle: TextStyle(
-
+            textStyle: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.w600),
           ),),
@@ -243,17 +242,14 @@ class _VolProfilePageState extends State<VolProfilePage> {
               ),
               TextField(
                 controller: nameController,
-
                 decoration: const InputDecoration(
                   labelText: "Name",
-
                 ),
               ),
               Container(
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-
                       width: 0.5,
                     ),
                   ),
@@ -263,15 +259,13 @@ class _VolProfilePageState extends State<VolProfilePage> {
                     Expanded(
                       child: Text(
                         dropdownvalue,
-                        style: TextStyle(
-
+                        style: const TextStyle(
                         ),
                       ),
                     ),
                     PopupMenuButton<String>(
                       icon: const Icon(
                         Icons.arrow_drop_down_circle,
-
                       ),
                       offset: const Offset(0, 50),
                       itemBuilder: (BuildContext context) {
@@ -282,7 +276,6 @@ class _VolProfilePageState extends State<VolProfilePage> {
                               width: MediaQuery.of(context).size.width,
                               child: const Text(
                                 'Male',
-
                               ),
                             ),
                           ),
@@ -292,7 +285,6 @@ class _VolProfilePageState extends State<VolProfilePage> {
                               width: MediaQuery.of(context).size.width,
                               child: const Text(
                                 'Female',
-
                               ),
                             ),
                           ),
@@ -309,15 +301,12 @@ class _VolProfilePageState extends State<VolProfilePage> {
               ),
               TextField(
                 controller: usernameController,
-
                 decoration: const InputDecoration(
                   labelText: "username",
-
                 ),
               ),
               TextField(
                 controller: emailController,
-
                 decoration: const InputDecoration(
                   labelText: "email",
 
@@ -325,31 +314,10 @@ class _VolProfilePageState extends State<VolProfilePage> {
                   // fillColor: Color(0xF6F5F5FF),
                 ),
               ),
-              // TextField(
-              //   controller: passwordController,
-              //   obscureText: obscureText,
-              //   decoration: InputDecoration(
-              //     filled: true,
-              //     fillColor: Color(0xF6F5F5FF),
-              //     labelText: 'Password',
-              //     suffixIcon: IconButton(
-              //       icon: Icon(
-              //         obscureText ? Icons.visibility : Icons.visibility_off,
-              //       ),
-              //       onPressed: () {
-              //         setState(() {
-              //           obscureText = !obscureText;
-              //         });
-              //       },
-              //     ),
-              //   ),
-              // ),
               TextField(
                 controller: dateController,
-
                 decoration: const InputDecoration(
                   labelText: "Date of Birth",
-
                   suffixIcon: Icon(
                     Icons.calendar_month_outlined,
                     color: Color(0xF6F5F5FF),

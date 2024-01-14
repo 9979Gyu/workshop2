@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/pages/chat_page.dart';
 import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
+import 'package:glaucotalk/pages/volunteer_homepage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -75,14 +76,25 @@ class _VolSearchPageState extends State<VolSearchPage> {
         title: const Text(
           "Search",
           style: TextStyle(
-
               fontSize: 25,
               fontWeight: FontWeight.w600
           ),
         ),
-
         backgroundColor: Theme.of(context).colorScheme.background,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => VolHomePage(),
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+        ),
       ),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -90,7 +102,6 @@ class _VolSearchPageState extends State<VolSearchPage> {
             children: [
               TextField(
                 controller: usernameController,
-
                 decoration: const InputDecoration(
                   labelText: "Search by Username",
                   labelStyle: TextStyle(color: Colors.grey),
@@ -147,6 +158,7 @@ class _VolSearchPageState extends State<VolSearchPage> {
                                   MaterialPageRoute(
                                       builder: (context) => ChatPage(
                                           receiverName: userData['name'],
+                                          receiverIDuser: userData['IDuser'],
                                           receiverUserID:
                                           searchSnapshot!.docs[index].id,
                                           senderprofilePicUrl:
@@ -185,7 +197,6 @@ class _VolSearchPageState extends State<VolSearchPage> {
                                 Text(
                                   'Email: ${userData['email']}',
                                   style: const TextStyle(
-
                                     fontSize: 16,
                                   ),
                                 ),
