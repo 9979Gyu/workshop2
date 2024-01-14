@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:glaucotalk/components/chat_bubble.dart';
 import 'package:glaucotalk/components/my_text_field.dart';
 import 'package:glaucotalk/database/chat/chat_service.dart';
+import 'package:glaucotalk/database/firebase_api.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverName;
@@ -30,6 +31,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
 
   void sendMessage() async{
     // only send message if there is something to send
@@ -199,7 +201,15 @@ class _ChatPageState extends State<ChatPage> {
 
           // Send button
           IconButton(
-              onPressed: sendMessage,
+              onPressed: (){
+                sendMessage();
+                // make this navigate to set token first later change
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context)=>
+                //         MyApp()))
+              },
               icon:
               const Icon(
                 Icons.telegram_outlined,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:glaucotalk/authorization/user/login_user.dart';
 import 'package:glaucotalk/database/auth_service.dart';
 import 'package:glaucotalk/pages/setting/Notification%20page/local_notifications.dart';
 import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
@@ -7,6 +8,9 @@ import 'package:provider/provider.dart';
 import 'database/firebase_api.dart';
 import 'firebase_options.dart';
 import 'pages/MySplashPage.dart';
+
+// Global key
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +48,14 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MySplashPage(),
+
+      // global key for the navigator
+      navigatorKey: navigatorKey,
+
+      routes: {
+        // Defines named routes. '/login' leads to an instance of LoginPage.
+        '/login': (context) => const LoginPage(onTap: null),
+      },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }
