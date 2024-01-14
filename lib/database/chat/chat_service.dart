@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:glaucotalk/model/message.dart';
+import 'package:glaucotalk/Controller/OneSignalController.dart'; // Import your OneSignalController class
 
 class ChatService extends ChangeNotifier {
-  // Get instance of auth and firestore
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
-  // SEND MESSAGES
-  Future<void> sendMessage(String receiverId, String message, String name) async {
+  Future<void> sendMessage(String receiverId, String message, String receiverIDuser, String name) async {
     try {
       // Validate current user
       final currentUser = _firebaseAuth.currentUser;
@@ -29,7 +27,6 @@ class ChatService extends ChangeNotifier {
 
       print(currentUserId);
 
-     // final String currentUserProfile = userDoc['profilePictureUrl'] ?? '';
       final String currentName = userDoc['name'] ?? '';
       final Timestamp timestamp = Timestamp.now();
 
@@ -54,16 +51,22 @@ class ChatService extends ChangeNotifier {
           .doc(chatRoomId)
           .collection('messages')
           .add(newMessage.toMap());
+
+      // Send push notification using OneSignalController
+      OneSignalController onesignal = OneSignalController();
+      onesignal.SendNotification(
+          "New Message Received",
+          message,
+          [receiverIDuser]);
+
       print('Message sent successfully.');
     } catch (e) {
       print('Error sending message: $e');
     }
   }
 
-  // RECEIVE MESSAGES
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {
     try {
-      // Construct a chat room id
       List<String> ids = [userId, otherUserId];
       ids.sort();
       String chatRoomId = ids.join("_");
@@ -76,7 +79,6 @@ class ChatService extends ChangeNotifier {
           .snapshots();
     } catch (e) {
       print('Error retrieving messages: $e');
-      // Return an empty stream on error
       return Stream<QuerySnapshot>.empty();
     }
   }

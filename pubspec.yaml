@@ -68,6 +68,7 @@ dependencies:
   google_nav_bar: ^5.0.6
   curved_navigation_bar: ^1.0.3
   slideable: ^0.0.2
+  onesignal_flutter: ^5.0.4
 
 dev_dependencies:
   flutter_test:

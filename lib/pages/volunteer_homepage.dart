@@ -69,6 +69,44 @@ class _VolHomePageState extends State<VolHomePage> {
     });
   }
 
+  Future<void> updateUserStatus() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    try{
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userDoc.exists) {
+        int status = userDoc['status'] ?? 1; //default if status is not initialized
+
+        if (status == 0) {
+          // Update the user's status to 1 (active) if current is 0 (inactive)
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .update({'status': 1});
+
+          // updage local status variable if needed
+          setState(() {
+            status = 1;
+          });
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+            const SnackBar(
+              content: Text(
+                  "Status have been changed"),
+            ),
+          );
+        }
+      }
+    } catch (error){
+      print("Unable to change the status: $error");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +120,7 @@ class _VolHomePageState extends State<VolHomePage> {
       const Duration(minutes: 1),
           (timer) => setState(() {}),
     );
+    updateUserStatus();
   }
 
   @override
@@ -140,134 +179,137 @@ class _VolHomePageState extends State<VolHomePage> {
     }
   }
 
+  Future<void> softDeleteUser(String userId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'status': 0}); // set status to 0 = inactive
+    } catch(e){
+      Text("Error soft delete: $e");
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isNightMode = Provider.of<ThemeProvider>(context).themeData.brightness == Brightness.dark;
     return DefaultTabController(
-        length: 2,
-    child: Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
+      length: 2,
+      child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: Center(
-          child: Text(
-            "Message",
-            style: GoogleFonts.aBeeZee(
-              textStyle: const TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Center(
+            child: Text(
+              "Message",
+              style: GoogleFonts.aBeeZee(
+                textStyle: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-        ),
-        actions: [
-          // Search Button
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const VolSearchPage(),
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.search_sharp,
-              size: 20,
-
+          actions: [
+            // Search Button
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const VolSearchPage(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.search_sharp,
+                size: 20,
+              ),
             ),
-          ),
-          // IconButton(
-          //   onPressed: () {
-          //     navigateToTakePictureScreen(context, firstCamera!);
-          //   },
-          //   icon: const Icon(
-          //     Icons.camera_alt,
-          //     ),
-          // ),
-        ],
-      ),
+          ],
+        ),
 
-      body: TabBarView(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title 'Stories'
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Stories',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+        body: TabBarView(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title 'Stories'
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Stories',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
 
-              // Story View (Added as the second child in TabBarView)
-              Container(
-                height: 85, // Adjust height as needed
-                child: const VolStatusPage(userId: '',), // Replace 'YourStoryViewWidget()' with your story view implementation
-              ),
-
-              // Display user's name and email
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-                  crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
-                  children: [
-                    // Display current user's name
-                    Text(
-                      'Logged in as ${nameController.text}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center, // Center text within the column
-                    ),
-                    // Display current user's email
-                    Text(
-                      '${emailController.text}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center, // Center text within the column
-                    ),
-                  ],
+                // Story View (Added as the second child in TabBarView)
+                Container(
+                  height: 85, // Adjust height as needed
+                  child: const VolStatusPage(userId: '',), // Replace 'YourStoryViewWidget()' with your story view implementation
                 ),
-              ),
-              Expanded(
-                child: _buildUserList(),
-              ),
-            ],
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const VolAddStoryPage(),
-            ),
-          );
-        },
-        backgroundColor: Colors.blueAccent[700],
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 35,
-        ),
-      ),
 
-      // Add a drawer for a sidebar navigation
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        child: ListView(
-          padding: const EdgeInsets.all(8.0),
-          children: [
-            DrawerHeader(
+                // Display user's name and email
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+                    crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+                    children: [
+                      // Display current user's name
+                      Text(
+                        'Logged in as ${nameController.text}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center, // Center text within the column
+                      ),
+                      // Display current user's email
+                      Text(
+                        '${emailController.text}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center, // Center text within the column
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: _buildUserList(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const VolAddStoryPage(),
+              ),
+            );
+          },
+          backgroundColor: Colors.blueAccent[700],
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 35,
+          ),
+        ),
+
+        // Add a drawer for a sidebar navigation
+        drawer: Drawer(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          child: ListView(
+            padding: const EdgeInsets.all(8.0),
+            children: [
+              DrawerHeader(
                 child: Row(
                   children: [
                     Expanded(child: CircleAvatar(
@@ -276,12 +318,12 @@ class _VolHomePageState extends State<VolHomePage> {
                           profilePictureUrl.isNotEmpty
                           ? NetworkImage(profilePictureUrl!)
                           : const AssetImage('assets/logo.png') as
-                          ImageProvider<Object>,
-                          backgroundColor: Colors.grey,
-                     ),
+                      ImageProvider<Object>,
+                      backgroundColor: Colors.grey,
+                    ),
                     ),
                     const SizedBox(width: 5),
-                     Padding(
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,10 +351,10 @@ class _VolHomePageState extends State<VolHomePage> {
                               onPressed: () async {
                                 // Navigate to Edit Profile
                                 bool result = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (context) => const VolProfilePage(),
-                                    ),
+                                  ),
                                 );
 
                                 print('This is the save changes: $result');
@@ -345,216 +387,216 @@ class _VolHomePageState extends State<VolHomePage> {
                     )
                   ],
                 ),
-            ),
-
-            const SizedBox(height: 5),
-
-             ListTile(
-              leading: const Icon(
-                Icons.account_circle_rounded,
-                size: 25,
               ),
-              title: Text(
-                'Account',
-                style: GoogleFonts.robotoCondensed(
-                  textStyle: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600
+
+              const SizedBox(height: 5),
+
+              ListTile(
+                leading: const Icon(
+                  Icons.account_circle_rounded,
+                  size: 25,
+                ),
+                title: Text(
+                  'Account',
+                  style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600
+                    ),
                   ),
                 ),
-              ),
-               selected: _selectedIndex == 0,
-               onTap: () {
-                // Update the state of the app
-                 _onItemTapped(0);
-                 // Close the drawer
-                 Navigator.pop(context);
-                 Navigator.push(context,
-                   MaterialPageRoute(
-                       builder: (context) => const VolSettingPageUI()
-                   ),
-                 );
-               },
-            ),
-
-            const SizedBox(height: 8),
-
-            ListTile(
-              leading: const Icon(
-                Icons.app_settings_alt_outlined,
-                size: 25,
-              ),
-              title: Text(
-                'Appearance',
-                style: GoogleFonts.robotoCondensed(
-                  textStyle: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600
-                  ),
-                ),
-              ),
-              selected: _selectedIndex == 1,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(1);
-                // Then close the drawer
-                Navigator.pop(context);
-                Navigator.push(context,
-                  MaterialPageRoute(
-                      builder: (context) => const ThemePage()
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 8,),
-
-            ListTile(
-              leading: const Icon(
-                Icons.chat_outlined,
-                size: 25,
-              ),
-              title: Text(
-                'Chats',
-                style: GoogleFonts.robotoCondensed(
-                  textStyle: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600
-                  ),
-                ),
-              ),
-              selected: _selectedIndex == 2,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(2);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-
-            const SizedBox(height: 8,),
-
-            ListTile(
-              leading: const Icon(
-                Icons.notifications_active_outlined,
-                size: 25,
-              ),
-              title: Text(
-                'Notifications',
-                style: GoogleFonts.robotoCondensed(
-                  textStyle: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600
-                  ),
-                ),
-              ),
-              selected: _selectedIndex == 3,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(3);
-                // Then close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
+                selected: _selectedIndex == 0,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(0);
+                  // Close the drawer
+                  Navigator.pop(context);
+                  Navigator.push(context,
                     MaterialPageRoute(
-                        builder: (context) => const NotiPage())
-                );
-              },
-            ),
-
-            const SizedBox(height: 8,),
-
-            ListTile(
-              leading: const Icon(
-                Icons.question_mark_outlined,
-                size: 25,
+                        builder: (context) => const VolSettingPageUI()
+                    ),
+                  );
+                },
               ),
-              title: Text(
-                'Help',
-                style: GoogleFonts.robotoCondensed(
-                  textStyle: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600
+
+              const SizedBox(height: 8),
+
+              ListTile(
+                leading: const Icon(
+                  Icons.app_settings_alt_outlined,
+                  size: 25,
+                ),
+                title: Text(
+                  'Appearance',
+                  style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600
+                    ),
                   ),
                 ),
+                selected: _selectedIndex == 1,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(1);
+                  // Then close the drawer
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => const ThemePage()
+                    ),
+                  );
+                },
               ),
-              selected: _selectedIndex == 4,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(4);
-                // Then close the drawer
-                Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) {
-                      return const VolHelpCenter();
-                    },
-                      settings: const RouteSettings(name: 'HelpCenter',),
-                    )
-                );
-              },
-            ),
 
-            const SizedBox(height: 8,),
+              const SizedBox(height: 8,),
 
-            ListTile(
-              leading: const Icon(
-                Icons.exit_to_app_outlined,
-                size: 25,
-              ),
-              title: Text(
-                'Sign Out',
-                style: GoogleFonts.robotoCondensed(
-                  textStyle: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600
+              ListTile(
+                leading: const Icon(
+                  Icons.chat_outlined,
+                  size: 25,
+                ),
+                title: Text(
+                  'Chats',
+                  style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600
+                    ),
                   ),
                 ),
+                selected: _selectedIndex == 2,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(2);
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
               ),
-              selected: _selectedIndex == 5,
-              onTap: () async {
-                // Show confirmation dialog
-                bool confirmLogout = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Sign Out'),
-                      content: const Text('Are you sure you want to sign out?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text('Sign Out'),
-                        ),
-                      ],
-                    );
-                  },
-                ) ?? false; // The ?? false is used in case the dialog is dismissed without any button being pressed
 
-                // Check confirmation and perform sign out
-                if (confirmLogout) {
-                  try {
-                    await FirebaseAuth.instance.signOut();
-                    // Navigate to login page after signed out
-                    Navigator.pushAndRemoveUntil(
+              const SizedBox(height: 8,),
+
+              ListTile(
+                leading: const Icon(
+                  Icons.notifications_active_outlined,
+                  size: 25,
+                ),
+                title: Text(
+                  'Notifications',
+                  style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+                selected: _selectedIndex == 3,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(3);
+                  // Then close the drawer
+                  Navigator.pop(context);
+                  Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MainMenu()),
-                          (Route<dynamic> route) => false,
-                    );
-                  } catch (e) {
-                    print("Error signing out: $e");
+                          builder: (context) => const NotiPage())
+                  );
+                },
+              ),
+
+              const SizedBox(height: 8,),
+
+              ListTile(
+                leading: const Icon(
+                  Icons.question_mark_outlined,
+                  size: 25,
+                ),
+                title: Text(
+                  'Help',
+                  style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+                selected: _selectedIndex == 4,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(4);
+                  // Then close the drawer
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) {
+                        return const VolHelpCenter();
+                      },
+                        settings: const RouteSettings(name: 'HelpCenter',),
+                      )
+                  );
+                },
+              ),
+
+              const SizedBox(height: 8,),
+
+              ListTile(
+                leading: const Icon(
+                  Icons.exit_to_app_outlined,
+                  size: 25,
+                ),
+                title: Text(
+                  'Sign Out',
+                  style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+                selected: _selectedIndex == 5,
+                onTap: () async {
+                  // Show confirmation dialog
+                  bool confirmLogout = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Sign Out'),
+                        content: const Text('Are you sure you want to sign out?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('Sign Out'),
+                          ),
+                        ],
+                      );
+                    },
+                  ) ?? false; // The ?? false is used in case the dialog is dismissed without any button being pressed
+
+                  // Check confirmation and perform sign out
+                  if (confirmLogout) {
+                    try {
+                      await FirebaseAuth.instance.signOut();
+                      // Navigate to login page after signed out
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MainMenu()),
+                            (Route<dynamic> route) => false,
+                      );
+                    } catch (e) {
+                      print("Error signing out: $e");
+                    }
                   }
-                }
-              },
-            ),
-            const SizedBox(height: 8,),
-          ],
+                },
+              ),
+              const SizedBox(height: 8,),
+            ],
+          ),
         ),
       ),
-     ),
     );
   }
 
@@ -585,8 +627,17 @@ class _VolHomePageState extends State<VolHomePage> {
     // Using a ValueNotifier to handle image loading state
     ValueNotifier<bool> useDefaultImage = ValueNotifier<bool>(false);
 
+    int status = data['status'] ?? 1;
+
     // Check if a profile picture URL is available
-    String? profilePictureUrl = data['profilePictureUrl'] ?? '';
+    String profilePictureUrl = data['profilePictureUrl'] ?? '';
+
+    // If profilePictureUrl is null or empty, use a default image
+    if (profilePictureUrl == null || profilePictureUrl.isEmpty){
+      useDefaultImage.value = true;
+      // You can set a default image URL or AssetImage here
+      profilePictureUrl = 'assets/logo.png'; // Change to your default image source
+    }
 
     // // If no URL available, set to use default image to true
     // if (profilePictureUrl.isEmpty){
@@ -595,38 +646,57 @@ class _VolHomePageState extends State<VolHomePage> {
     //
 
     // display all users except current user
-    if(_auth.currentUser!.email != data['email']){
+    if(status == 1 && _auth.currentUser!.email != data['email']){
       return Container(
-          decoration: BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(12),
         ),
         margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: ListTile(
+
+        child: Dismissible(
+          key: Key(document.id),
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20.0),
+            child: const Icon(Icons.delete, color: Colors.white,),
+          ),
+          direction: DismissDirection.endToStart,
+          onDismissed: (direction){
+            softDeleteUser(document.id);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Successfully deleted")),
+            );
+          },
+         child: ListTile(
           leading: CircleAvatar(
-          backgroundImage: profilePictureUrl != null && profilePictureUrl.isNotEmpty
-            ? NetworkImage(profilePictureUrl)
-            : const AssetImage('assets/logo.png') as ImageProvider,
-          backgroundColor: Colors.blueGrey,
-      ),
-        title: Text(
-          data['name'],
-          style: const TextStyle(fontSize: 18, color: Colors.black,),
+            backgroundImage: profilePictureUrl != null && profilePictureUrl.isNotEmpty
+                ? NetworkImage(profilePictureUrl)
+                : const AssetImage('assets/logo.png') as ImageProvider,
+            backgroundColor: Colors.blueGrey,
+          ),
+          title: Text(
+            data['name'] ?? '',
+            style: const TextStyle(fontSize: 18, color: Colors.black,),
+          ),
+          onTap: (){
+            // pass the clicked user's UID to the chat page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => VolChatPage(
+                receiverName: data['name'] ?? '',
+                receiverIDuser: data['IDuser'] ?? '',
+                receiverUserID: document.id,
+                senderprofilePicUrl: data['profilePicUrl'] ?? '',
+              ),
+              ),
+            );
+          },
         ),
-        onTap: (){
-          // pass the clicked user's UID to the chat page
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => VolChatPage(
-              receiverName: data['name'] ?? '',
-              receiverUserID: document.id,
-              senderprofilePicUrl: data['profilePicUrl'] ?? '',
-            ),
-            ),
-          );
-        },
-       ),
+    ),
       );
     } else{
       // Return empty container

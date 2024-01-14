@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:glaucotalk/authorization/user/login_user.dart';
+import 'package:glaucotalk/database/notification/notification_service.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 
@@ -29,6 +30,28 @@ class _RegisterPageState extends State<RegisterPage> {
   String? passwordError;
   String? emailError;
   bool isPasswordVisible = false;
+  // static final notifications = NotificationsService();
+
+  Future<String> getHighestUserId() async {
+    QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
+        .collection('users')
+        .orderBy('IDuser', descending: true)
+        .limit(1)
+        .get();
+
+    if (users.docs.isNotEmpty){
+      return users.docs.first['IDuser'];
+    } else {
+      // No existing users, return a default value or handle accordingly
+      return '0';
+    }
+  }
+
+  Future<String> generateNewUserId() async {
+    String highestUserId = await getHighestUserId();
+    int newUserId = int.parse(highestUserId) + 1;
+    return newUserId.toString();
+  }
 
   // User register method
   void userSignUp() async {
@@ -67,8 +90,27 @@ class _RegisterPageState extends State<RegisterPage> {
           password: passwordController.text,
         );
 
-        // Create a new document in Firestore for the users
-        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        // Back up yg before
+        // await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        //   'name': nameController.text,
+        //   'email': emailController.text,
+        //   'password': passwordController.text,
+        //   'birthday': dateController.text,
+        //   'username': usernameController.text,
+        //   'role': 'user',
+        //   'status' : 1,
+        // });
+
+        // Create a new document in Firestore for the users with new user ID
+
+        // GET NEW USER ID
+        String newUserId = await generateNewUserId();
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'IDuser': newUserId,
           'name': nameController.text,
           'email': emailController.text,
           'password': passwordController.text,
@@ -88,10 +130,15 @@ class _RegisterPageState extends State<RegisterPage> {
       } else {
         showErrorMessage("The passwords do not match");
       }
+
+      // baru add
+      // await notifications.requestPermission();
+      // await notifications.getToken();
+
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context); // Dismiss the loading dialog
       showErrorMessage(e.message ?? "An unknown error occurred");
-    }catch (e) {
+    } catch (e) {
       Navigator.pop(context); // Dismiss the loading dialog
       showErrorMessage("An unexpected error occurred. Please try again.");
     }
@@ -163,7 +210,10 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: myCustomColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.home, color: Colors.white),
+          icon: const Icon(
+              Icons.home,
+              color: Colors.white
+          ),
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -347,7 +397,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       color: Colors.white,
                     ),
 
-                    obscureText: true,
+                    obscureText: !isPasswordVisible,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
@@ -425,6 +475,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 200,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrangeAccent,
                       elevation: 10,
                       shape: const StadiumBorder(),
                     ),
