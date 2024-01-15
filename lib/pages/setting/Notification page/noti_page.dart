@@ -115,102 +115,10 @@ class _NotiPageState extends State<NotiPage> {
                         }),
                 ],
               ),),
-
-              // Padding(
-              //   padding: const EdgeInsets.all(8),
-              //   child: Row(
-              //     children: [
-              //       Text("Sound",
-              //         style: GoogleFonts.poppins(
-              //           textStyle: TextStyle(
-              //               color: myTextColor,
-              //               fontSize: 18,
-              //               fontWeight: FontWeight.w600),
-              //         ),
-              //       ),
-              //       const SizedBox(width: 215,),
-              //       IconButton(
-              //           icon: const Icon(
-              //             Icons.arrow_forward_ios_sharp,
-              //             color: Colors.white,),
-              //           onPressed: (){},
-              //       ),
-              //     ],
-              //   ),),
-
-              // const SizedBox(height: 40),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   children: [
-              //     const Icon(
-              //       Icons.notifications_active,
-              //       color: Colors.white,
-              //     ),
-              //     const SizedBox(width: 10,height: 30,),
-              //     Text(
-              //       "Group Notification",
-              //       style: GoogleFonts.poppins(
-              //         textStyle: TextStyle(
-              //             color: myTextColor,
-              //             fontSize: 22,
-              //             fontWeight: FontWeight.w600),
-              //       ),),
-              //   ],
-              // ),
-              // const Divider(
-              //   height: 40,
-              //   thickness: 4,
-              // ),
-              // const SizedBox(height: 10,),
-              //
-              // Padding(
-              //   padding: const EdgeInsets.all(8),
-              //   child: Row(
-              //     children: [
-              //       Text("Show Notifications",
-              //         style: GoogleFonts.poppins(
-              //           textStyle: TextStyle(
-              //               color: myTextColor,
-              //               fontSize: 18,
-              //               fontWeight: FontWeight.w600),
-              //         ),
-              //       ),
-              //       const SizedBox(width: 100,),
-              //       Switch(
-              //           value: isGroupNotiSwitched,
-              //           onChanged: (value){
-              //             setState(() {
-              //               isGroupNotiSwitched = value;
-              //             });
-              //           }),
-              //     ],
-              //   ),),
-
-              // Padding(
-              //   padding: const EdgeInsets.all(8),
-              //   child: Row(
-              //     children: [
-              //       Text("Sound",
-              //         style: GoogleFonts.poppins(
-              //           textStyle: TextStyle(
-              //               color: myTextColor,
-              //               fontSize: 18,
-              //               fontWeight: FontWeight.w600),
-              //         ),
-              //       ),
-              //       const SizedBox(width: 215,),
-              //       IconButton(
-              //         icon: const Icon(
-              //           Icons.arrow_forward_ios_sharp,
-              //           color: Colors.white,),
-              //         onPressed: (){},
-              //       ),
-              //     ],
-              //   ),),
             ],
           ),
         ),
-     // ),
+
     );
   }
 }
