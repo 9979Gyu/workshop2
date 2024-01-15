@@ -16,7 +16,6 @@ import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
 import 'package:glaucotalk/pages/setting/account_center.dart';
 import 'package:glaucotalk/pages/setting/help_center.dart';
-import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
 import 'package:glaucotalk/pages/status/statuspage.dart';
 import 'package:glaucotalk/pages/image_classification.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -488,33 +487,6 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 8,),
 
-
-              ListTile(
-                leading: const Icon(
-                  Icons.app_settings_alt_outlined,
-                  color: Color(0xF6F5F5FF),
-                  size: 40,
-                ),
-                title: const Text(
-                  'Appearance',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Color(0xF6F5F5FF),),
-                ),
-                selected: _selectedIndex == 1,
-                onTap: () {
-                  // Update the state of the app
-                  _onItemTapped(1);
-                  // Then close the drawer
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => const ThemePage()
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 8,),
               ListTile(
                 leading: const Icon(
                   Icons.chat_outlined,
