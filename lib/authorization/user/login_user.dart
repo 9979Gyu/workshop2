@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glaucotalk/authorization/forgot_password.dart';
 import 'package:glaucotalk/authorization/user/register_user.dart';
-import 'package:glaucotalk/database/notification/notification_service.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -131,6 +130,58 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Future<String> getHighestUserId() async {
+    QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
+        .collection('users')
+        .orderBy('IDuser', descending: true)
+        .limit(1)
+        .get();
+
+    if (users.docs.isNotEmpty){
+      return users.docs.first['IDuser'];
+    } else {
+      // No existing users, return a default value or handle accordingly
+      return '0';
+    }
+  }
+
+  Future<String> generateNewUserId() async {
+    String highestUserId = await getHighestUserId();
+    int newUserId = int.parse(highestUserId) + 1;
+    return newUserId.toString();
+  }
+
+  // Function to register user sign in with google account to firestore
+  Future<void> saveUserDataToFirestore(User? user) async {
+    if (user != null) {
+      // Reference to the Firestore collection
+      final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+
+      // Check if the user already exists in Firestore
+      final userDoc = await usersCollection.doc(user.uid).get();
+
+      // GET NEW USER ID
+      String newUserId = await generateNewUserId();
+
+      if (!userDoc.exists) {
+        // If the user does not exist, add their data to Firestore
+        await usersCollection.doc(user.uid).set({
+          'username': user.displayName,
+          'name': user.displayName,
+          'email': user.email,
+          'photoURL': user.photoURL,
+          'IDuser': newUserId,
+          'birthday': null,
+          'role': 'user',
+          'password': 'abc123',
+          'status' : 1,
+        });
+      }
+    }
+  }
+
+
   // Function to handle sign in with google account
   Future<dynamic> signInWithGoogle() async {
     try {
@@ -144,7 +195,13 @@ class _LoginPageState extends State<LoginPage> {
         idToken: googleAuth?.idToken,
       );
 
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      //
+      // return await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Save user data to Firestore
+      return await saveUserDataToFirestore(authResult.user);
 
     }
     catch (e) {
@@ -386,9 +443,10 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      HomePage.loginWithGoogle(
-                                        userCredential.value
-                                      ),
+                                      HomePage.loginWithGoogle(userCredential.value),
+                                      // RegisterPage.signWithGoogle(
+                                      //   userCredential.value, (){}
+                                      // ),
                                   ),
                               );
                             }

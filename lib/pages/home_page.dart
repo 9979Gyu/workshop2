@@ -28,11 +28,9 @@ class HomePage extends StatefulWidget {
   UserCredential? _userCredential;
 
   HomePage({Key? key}) : super(key: key);
-
   HomePage.loginWithGoogle(UserCredential _userCredential){
     this._userCredential = _userCredential;
   }
-
   final user = FirebaseAuth.instance.currentUser!;
   
   @override

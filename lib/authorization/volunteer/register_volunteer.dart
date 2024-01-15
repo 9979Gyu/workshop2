@@ -6,6 +6,8 @@ import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../controller/encryption.dart';
+
 class RegisterVol extends StatefulWidget {
   const RegisterVol({super.key});
 
@@ -16,6 +18,8 @@ class RegisterVol extends StatefulWidget {
 class _RegisterVolState extends State<RegisterVol> {
   Color myCustomColor = const Color(0xFF00008B);
   Color myTextColor = const Color(0xF6F5F5FF);
+
+  final Encryption encryption = Encryption();
 
   // Text editing controllers
   final emailController = TextEditingController();
@@ -66,11 +70,13 @@ class _RegisterVolState extends State<RegisterVol> {
           password: passwordController.text,
         );
 
+        String hashedPwd = encryption.encryptPassword(passwordController.text);
+
         // Create a new document in Firestore for the users
         await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
           'name': nameController.text,
           'email': emailController.text,
-          'password': passwordController.text,
+          'password': hashedPwd,
           'birthday': dateController.text,
           'username': usernameController.text,
           'role': 'volunteer',

@@ -3,17 +3,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:glaucotalk/authorization/user/login_user.dart';
-import 'package:glaucotalk/database/notification/notification_service.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 
+import '../controller/encryption.dart';
+
 class RegisterPage extends StatefulWidget {
+  UserCredential? _userCredential;
   final Function()? onTap;
 
   RegisterPage({Key? key, required this.onTap}) : super(key: key);
+  // RegisterPage.signWithGoogle(UserCredential _userCredential, this.onTap){
+  //   this._userCredential = _userCredential;
+  // }
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState(_userCredential);
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -30,7 +35,22 @@ class _RegisterPageState extends State<RegisterPage> {
   String? passwordError;
   String? emailError;
   bool isPasswordVisible = false;
+
+  final Encryption encryption = Encryption();
+  final UserCredential? userCredential;
+  _RegisterPageState(this.userCredential);
   // static final notifications = NotificationsService();
+
+  // void initState(){
+  //   super.initState();
+  //   if(userCredential!.user!.uid!.isNotEmpty){
+  //     setState(() {
+  //       nameController.text = userCredential!.user!.displayName!;
+  //       usernameController.text = userCredential!.user!.displayName!;
+  //       emailController.text = userCredential!.user!.email!;
+  //     });
+  //   }
+  // }
 
   Future<String> getHighestUserId() async {
     QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
@@ -105,6 +125,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
         // GET NEW USER ID
         String newUserId = await generateNewUserId();
+        String encryptedPwd =
+          encryption.encryptPassword(passwordController.text);
 
         await FirebaseFirestore.instance
             .collection('users')
@@ -113,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
           'IDuser': newUserId,
           'name': nameController.text,
           'email': emailController.text,
-          'password': passwordController.text,
+          'password': encryptedPwd,
           'birthday': dateController.text,
           'username': usernameController.text,
           'role': 'user',
