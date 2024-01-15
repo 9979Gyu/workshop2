@@ -1,17 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/authorization/controller/AuthGoogle.dart';
 import 'package:glaucotalk/authorization/forgot_password.dart';
 import 'package:glaucotalk/authorization/user/register_user.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 import '../../pages/main_menu.dart';
-
-
 
 class LoginPage extends StatefulWidget {
 
@@ -36,6 +35,8 @@ class _LoginPageState extends State<LoginPage> {
   // text editing controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final AuthGoogle _authGoogle = AuthGoogle();
 
   // user login method
   void userLogin() async {
@@ -130,85 +131,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<String> getHighestUserId() async {
-    QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
-        .collection('users')
-        .orderBy('IDuser', descending: true)
-        .limit(1)
-        .get();
-
-    if (users.docs.isNotEmpty){
-      return users.docs.first['IDuser'];
-    } else {
-      // No existing users, return a default value or handle accordingly
-      return '0';
-    }
-  }
-
-  Future<String> generateNewUserId() async {
-    String highestUserId = await getHighestUserId();
-    int newUserId = int.parse(highestUserId) + 1;
-    return newUserId.toString();
-  }
-
-  // Function to register user sign in with google account to firestore
-  Future<void> saveUserDataToFirestore(User? user) async {
-    if (user != null) {
-      // Reference to the Firestore collection
-      final CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection('users');
-
-      // Check if the user already exists in Firestore
-      final userDoc = await usersCollection.doc(user.uid).get();
-
-      // GET NEW USER ID
-      String newUserId = await generateNewUserId();
-
-      if (!userDoc.exists) {
-        // If the user does not exist, add their data to Firestore
-        await usersCollection.doc(user.uid).set({
-          'username': user.displayName,
-          'name': user.displayName,
-          'email': user.email,
-          'photoURL': user.photoURL,
-          'IDuser': newUserId,
-          'birthday': null,
-          'role': 'user',
-          'password': 'abc123',
-          'status' : 1,
-        });
-      }
-    }
-  }
-
-
-  // Function to handle sign in with google account
-  Future<dynamic> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      //
-      // return await FirebaseAuth.instance.signInWithCredential(credential);
-
-      final authResult = await FirebaseAuth.instance.signInWithCredential(credential);
-
-      // Save user data to Firestore
-      return await saveUserDataToFirestore(authResult.user);
-
-    }
-    catch (e) {
-      print('Failed to login with gmail: $e');
-    }
-  }
-
   // show error message to user
   void showErrorMessage(String message) {
     showDialog(
@@ -243,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    ValueNotifier userCredential = ValueNotifier('');
+    // ValueNotifier userCredential = ValueNotifier('');
 
     return Scaffold(
       appBar: AppBar(
@@ -420,84 +342,24 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 15),
 
-                ValueListenableBuilder(
-                  valueListenable: userCredential,
-                  builder: (context, value, child) {
-                    return (userCredential.value == '' ||
-                        userCredential.value == null) ? Center(
-                      child: Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        child: IconButton(
-                          iconSize: 40,
-                          icon: Image.asset(
-                            'assets/google.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                          onPressed: () async {
-                            userCredential.value = await signInWithGoogle();
-                            if (userCredential.value != null){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomePage.loginWithGoogle(userCredential.value),
-                                      // RegisterPage.signWithGoogle(
-                                      //   userCredential.value, (){}
-                                      // ),
-                                  ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ) : Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    width: 1.5,
-                                    color: Colors.black54
-                                )
-                            ),
-                            child: Image.network(
-                                userCredential.value.user!.photoURL.toString()
-                            ),
-                          ),
+                SignInButton(
+                  Buttons.google,
+                  text: "Sign up with Google",
+                  onPressed: () async {
+                    bool result = await _authGoogle.signInWithGoogle("user");
 
-                          // const SizedBox(height: 20,),
-                          //
-                          // Text(
-                          //     userCredential.value.user!.displayName.toString()
-                          // ),
-                          //
-                          // const SizedBox(height: 20,),
-                          //
-                          // Text(userCredential.value.user!.email.toString()),
-                          //
-                          // const SizedBox(height: 30,),
-                          //
-                          // ElevatedButton(
-                          //     onPressed: () async {
-                          //       bool result = await signOutFromGoogle();
-                          //       if (result)
-                          //         userCredential.value = '';
-                          //     },
-                          //     child: const Text('Logout')
-                          // )
-                        ],
-                      ),
-                    );
-                  }
+                    if(result){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              HomePage(),
+                          ),
+                      );
+                    }
+
+                  },
                 ),
-
                 const SizedBox(height: 25),
 
                 // doesn't have an account

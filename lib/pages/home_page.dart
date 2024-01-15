@@ -24,16 +24,12 @@ import 'package:image/image.dart' as img;
 
 class HomePage extends StatefulWidget {
 
-  UserCredential? _userCredential;
-
   HomePage({Key? key}) : super(key: key);
-  HomePage.loginWithGoogle(UserCredential _userCredential){
-    this._userCredential = _userCredential;
-  }
+
   final user = FirebaseAuth.instance.currentUser!;
   
   @override
-  State<HomePage> createState() => _HomePageState(_userCredential);
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -56,10 +52,6 @@ class _HomePageState extends State<HomePage> {
   AuthService authService = AuthService();
 
   int _selectedIndex =0;
-
-  final UserCredential? userCredential;
-
-  _HomePageState(this.userCredential);
 
   void _onItemTapped(int index){
     setState(() {
@@ -228,17 +220,17 @@ class _HomePageState extends State<HomePage> {
         });
 
       }
-      else if(userId.isNotEmpty && userCredential!.user!.uid!.isNotEmpty){
-        setState(() {
-          nameController.text = userCredential!.user!.displayName!;
-          usernameController.text = userCredential!.user!.displayName!;
-          emailController.text = userCredential!.user!.email!;
-
-          // set the profile pictrue URL from firestore
-          profilePictureUrl = userCredential!.user!.photoURL!;
-
-        });
-      }
+      // else if(userId.isNotEmpty && userCredential!.user!.uid!.isNotEmpty){
+      //   setState(() {
+      //     nameController.text = userCredential!.user!.displayName!;
+      //     usernameController.text = userCredential!.user!.displayName!;
+      //     emailController.text = userCredential!.user!.email!;
+      //
+      //     // set the profile pictrue URL from firestore
+      //     profilePictureUrl = userCredential!.user!.photoURL!;
+      //
+      //   });
+      // }
       else{
         print("Data not exist");
       }

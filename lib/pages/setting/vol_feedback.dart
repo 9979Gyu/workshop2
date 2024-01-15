@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:glaucotalk/pages/setting/help_center.dart';
 import 'package:glaucotalk/pages/setting/theme/theme_provider.dart';
 import 'package:glaucotalk/pages/setting/vol_help_center.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -155,7 +154,7 @@ class _VolFeedbackScreenState extends State<VolFeedbackPage> {
                     ),
                   ),
                   style: const TextStyle(
-                      color: Colors.white), // Text color while typing
+                      color: Colors.grey), // Text color while typing
                 ),
               ),
 
@@ -211,7 +210,7 @@ class _VolFeedbackScreenState extends State<VolFeedbackPage> {
           },
           child: Icon(
             index < _rating ? Icons.star : Icons.star_border,
-            color: Colors.yellowAccent,
+            color: Colors.blueGrey,
             size: 40.0,
           ),
         );
@@ -256,7 +255,7 @@ class _VolFeedbackScreenState extends State<VolFeedbackPage> {
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HelpCenter()
+                            builder: (context) => const VolHelpCenter()
                         ), (route) => false
                     );
                   },

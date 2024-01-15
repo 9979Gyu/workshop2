@@ -9,16 +9,12 @@ import 'package:glaucotalk/pages/main_menu.dart';
 import '../controller/encryption.dart';
 
 class RegisterPage extends StatefulWidget {
-  UserCredential? _userCredential;
   final Function()? onTap;
 
   RegisterPage({Key? key, required this.onTap}) : super(key: key);
-  // RegisterPage.signWithGoogle(UserCredential _userCredential, this.onTap){
-  //   this._userCredential = _userCredential;
-  // }
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState(_userCredential);
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -37,20 +33,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isPasswordVisible = false;
 
   final Encryption encryption = Encryption();
-  final UserCredential? userCredential;
-  _RegisterPageState(this.userCredential);
-  // static final notifications = NotificationsService();
 
-  // void initState(){
-  //   super.initState();
-  //   if(userCredential!.user!.uid!.isNotEmpty){
-  //     setState(() {
-  //       nameController.text = userCredential!.user!.displayName!;
-  //       usernameController.text = userCredential!.user!.displayName!;
-  //       emailController.text = userCredential!.user!.email!;
-  //     });
-  //   }
-  // }
+  // static final notifications = NotificationsService();
 
   Future<String> getHighestUserId() async {
     QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance

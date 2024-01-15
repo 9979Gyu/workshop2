@@ -29,7 +29,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController birthController = TextEditingController();
@@ -109,20 +108,21 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           emailController.text = userDoc['email'];
           nameController.text = userDoc['name'];
-          passwordController.text = userDoc['password'];
-          dropdownvalue = userDoc['gender'];
-          dateController.text = userDoc['birthday'] ?? ' ';
-          usernameController.text = userDoc['username'] ?? '';
-
-          // set the profile pictrue URL from firestore
+          usernameController.text = userDoc['username'];
           profilePictureUrl = userDoc['profilePictureUrl'];
-          // set other fields similarity
+          dateController.text = userDoc['birthday'];
+          dropdownvalue = userDoc['gender'] ?? 'Male';
+
         });
 
         print("this is user name : ${userDoc['username']}");
         print("This is profile picture : ${profilePictureUrl}");
       }
-    } catch(e){
+      else{
+        print("Data not exist");
+      }
+    }
+    catch(e){
       print(e);
     }
   }
@@ -141,7 +141,6 @@ class _ProfilePageState extends State<ProfilePage> {
             "${selected.year}-${selected.month.toString().padLeft(2, '0')}"
             "-${selected.day.toString().padLeft(2, '0')}";
         dateController.text = formattedDate; // Update the dateController
-        //dateController.text = selected.toString().split(" ")[0];
       });
     }
   }
@@ -324,25 +323,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   // fillColor: Color(0xF6F5F5FF),
                 ),
               ),
-              // TextField(
-              //   controller: passwordController,
-              //   obscureText: obscureText,
-              //   decoration: InputDecoration(
-              //     filled: true,
-              //     fillColor: Color(0xF6F5F5FF),
-              //     labelText: 'Password',
-              //     suffixIcon: IconButton(
-              //       icon: Icon(
-              //         obscureText ? Icons.visibility : Icons.visibility_off,
-              //       ),
-              //       onPressed: () {
-              //         setState(() {
-              //           obscureText = !obscureText;
-              //         });
-              //       },
-              //     ),
-              //   ),
-              // ),
               TextField(
                 controller: dateController,
                 style: const TextStyle(color: Color(0xF6F5F5FF)),
@@ -374,7 +354,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () async {
                   if(usernameController.text.isNotEmpty &&
                       nameController.text.isNotEmpty &&
-                      passwordController.text.isNotEmpty &&
                       emailController.text.isNotEmpty){
                     updateUserData();
                     await uploadImageAndSave();
