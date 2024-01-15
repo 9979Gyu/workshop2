@@ -109,20 +109,21 @@ class _VolProfilePageState extends State<VolProfilePage> {
         setState(() {
           emailController.text = userDoc['email'];
           nameController.text = userDoc['name'];
-          passwordController.text = userDoc['password'];
-          dropdownvalue = userDoc['gender'];
-          dateController.text = userDoc['birthday'] ?? ' ';
-          usernameController.text = userDoc['username'] ?? '';
-
-          // set the profile pictrue URL from firestore
+          usernameController.text = userDoc['username'];
           profilePictureUrl = userDoc['profilePictureUrl'];
-          // set other fields similarity
+          dateController.text = userDoc['birthday'];
+          dropdownvalue = userDoc['gender'] ?? 'Male';
+
         });
 
         print("this is user name : ${userDoc['username']}");
         print("This is profile picture : ${profilePictureUrl}");
       }
-    } catch(e){
+      else{
+        print("Data not exist");
+      }
+    }
+    catch(e){
       print(e);
     }
   }

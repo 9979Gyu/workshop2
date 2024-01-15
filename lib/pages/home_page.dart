@@ -16,7 +16,6 @@ import 'package:glaucotalk/pages/search.dart';
 import 'package:glaucotalk/pages/setting/Notification%20page/noti_page.dart';
 import 'package:glaucotalk/pages/setting/account_center.dart';
 import 'package:glaucotalk/pages/setting/help_center.dart';
-import 'package:glaucotalk/pages/setting/theme/Apparance.dart';
 import 'package:glaucotalk/pages/status/statuspage.dart';
 import 'package:glaucotalk/pages/image_classification.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,10 +23,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 
 class HomePage extends StatefulWidget {
+
   HomePage({Key? key}) : super(key: key);
 
   final user = FirebaseAuth.instance.currentUser!;
-
+  
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -219,8 +219,18 @@ class _HomePageState extends State<HomePage> {
           // set other fields similarity
         });
 
-        print("This is the profile picture url : ${profilePictureUrl}");
       }
+      // else if(userId.isNotEmpty && userCredential!.user!.uid!.isNotEmpty){
+      //   setState(() {
+      //     nameController.text = userCredential!.user!.displayName!;
+      //     usernameController.text = userCredential!.user!.displayName!;
+      //     emailController.text = userCredential!.user!.email!;
+      //
+      //     // set the profile pictrue URL from firestore
+      //     profilePictureUrl = userCredential!.user!.photoURL!;
+      //
+      //   });
+      // }
       else{
         print("Data not exist");
       }
@@ -469,33 +479,6 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 8,),
 
-
-              ListTile(
-                leading: const Icon(
-                  Icons.app_settings_alt_outlined,
-                  color: Color(0xF6F5F5FF),
-                  size: 40,
-                ),
-                title: const Text(
-                  'Appearance',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Color(0xF6F5F5FF),),
-                ),
-                selected: _selectedIndex == 1,
-                onTap: () {
-                  // Update the state of the app
-                  _onItemTapped(1);
-                  // Then close the drawer
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => const ThemePage()
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 8,),
               ListTile(
                 leading: const Icon(
                   Icons.chat_outlined,
@@ -508,7 +491,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 30,
                     color: Color(0xF6F5F5FF),),
                 ),
-                selected: _selectedIndex == 2,
+                selected: _selectedIndex == 1,
                 onTap: () {
                   // Update the state of the app
                   _onItemTapped(2);
@@ -553,7 +536,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 30,
                     color: Color(0xF6F5F5FF),),
                 ),
-                selected: _selectedIndex == 4,
+                selected: _selectedIndex == 3,
                 onTap: () {
                   // Update the state of the app
                   _onItemTapped(4);
@@ -581,7 +564,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 30,
                     color: Color(0xF6F5F5FF),),
                 ),
-                selected: _selectedIndex == 5,
+                selected: _selectedIndex == 4,
                 onTap: () async {
                   // Show confirmation dialog
                   bool confirmLogout = await showDialog(
@@ -629,7 +612,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   //build a list of users for the current logged in users.
-  // Builds a list of users, each with an unread message count badge
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -651,7 +633,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   //build individual user list items
-  // _buildUserListItem method
   Widget _buildUserListItem(DocumentSnapshot document){
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     bool isCurrentUser = _auth.currentUser!.email == data['name'];

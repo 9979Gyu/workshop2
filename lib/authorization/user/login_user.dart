@@ -1,17 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/authorization/controller/AuthGoogle.dart';
 import 'package:glaucotalk/authorization/forgot_password.dart';
 import 'package:glaucotalk/authorization/user/register_user.dart';
-import 'package:glaucotalk/database/notification/notification_service.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 import '../../pages/main_menu.dart';
-
-
 
 class LoginPage extends StatefulWidget {
 
@@ -36,6 +35,8 @@ class _LoginPageState extends State<LoginPage> {
   // text editing controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final AuthGoogle _authGoogle = AuthGoogle();
 
   // user login method
   void userLogin() async {
@@ -103,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
             'You do not have the necessary permissions to log in as a user.');
         return;
       }
-
     } catch(e){
       Navigator.of(context).pop();
 
@@ -165,6 +165,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ValueNotifier userCredential = ValueNotifier('');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: myCustomColor,
@@ -339,6 +341,25 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 15),
+
+                SignInButton(
+                  Buttons.google,
+                  text: "Sign up with Google",
+                  onPressed: () async {
+                    bool result = await _authGoogle.signInWithGoogle("user");
+
+                    if(result){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              HomePage(),
+                          ),
+                      );
+                    }
+
+                  },
+                ),
                 const SizedBox(height: 25),
 
                 // doesn't have an account
@@ -370,6 +391,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20,),
                   ],
                 )
               ],

@@ -3,14 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:glaucotalk/authorization/user/login_user.dart';
-import 'package:glaucotalk/database/notification/notification_service.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
+
+import '../controller/encryption.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
 
-  const RegisterPage({Key? key, required this.onTap}) : super(key: key);
+  RegisterPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -30,6 +31,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String? passwordError;
   String? emailError;
   bool isPasswordVisible = false;
+
+  final Encryption encryption = Encryption();
+
   // static final notifications = NotificationsService();
 
   Future<String> getHighestUserId() async {
@@ -105,6 +109,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
         // GET NEW USER ID
         String newUserId = await generateNewUserId();
+        String encryptedPwd =
+          encryption.encryptPassword(passwordController.text);
 
         await FirebaseFirestore.instance
             .collection('users')
@@ -113,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
           'IDuser': newUserId,
           'name': nameController.text,
           'email': emailController.text,
-          'password': passwordController.text,
+          'password': encryptedPwd,
           'birthday': dateController.text,
           'username': usernameController.text,
           'role': 'user',
@@ -204,6 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: myCustomColor,
       appBar: AppBar(

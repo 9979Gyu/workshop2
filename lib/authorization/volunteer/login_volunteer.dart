@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/authorization/controller/AuthGoogle.dart';
 import 'package:glaucotalk/authorization/forgot_password.dart';
 import 'package:glaucotalk/authorization/volunteer/register_volunteer.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
@@ -8,6 +9,7 @@ import 'package:glaucotalk/pages/volunteer_homepage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginVol extends StatefulWidget {
 
@@ -29,6 +31,7 @@ class _LoginVolState extends State<LoginVol> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final AuthGoogle _authGoogle = AuthGoogle();
 
   // user login method
   void volunteerLogin() async {
@@ -319,6 +322,24 @@ class _LoginVolState extends State<LoginVol> {
               ),
 
               const SizedBox(height: 15),
+              SignInButton(
+                Buttons.google,
+                text: "Sign up with Google",
+                onPressed: () async {
+                  bool result = await _authGoogle.signInWithGoogle("volunteer");
+
+                  if(result){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            VolHomePage(),
+                      ),
+                    );
+                  }
+
+                },
+              ),
               const SizedBox(height: 25),
 
               // doesn't have an account
