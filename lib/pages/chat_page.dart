@@ -96,24 +96,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void sendMessage() async{
+
     // only send message if there is something to send
     if (_messageController.text.isNotEmpty){
-      // String profilePicUrl = "lib/images/winter.jpg"; // fetch current user's profile pic
-
       await _chatService.sendMessage(
         receiverUserID,
         _messageController.text,
         widget.receiverIDuser,
         widget.receiverName,
-        //widget.senderprofilePicUrl,
-        //"",
       );
-
-      // // baru add
-      // await notificationsService.sendNotification(
-      //   body: _messageController.text,
-      //   senderId: FirebaseAuth.instance.currentUser!.uid,
-      // );
 
       print(widget.receiverUserID);
       print(widget.receiverIDuser);
@@ -401,7 +392,6 @@ class _ChatPageState extends State<ChatPage> {
               obscureText: false,
             ),
           ),
-
           // Send button
          /* IconButton(
               onPressed: sendMessage,

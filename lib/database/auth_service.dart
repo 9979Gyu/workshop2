@@ -92,15 +92,7 @@ class AuthService extends ChangeNotifier{
     }
   }
 
-  Future<void> verifyEmail() async {
-    final User? user = _auth.currentUser;
-    if(user != null){
-      await user.sendEmailVerification();
-      print('Email verification sent to ${user.email}');
-    } else{
-      print("No user currently signed in");
-    }
-  }
+
 
   //Register
   Future <User?> registerUserWithEmailandPassword(String name, String email,
@@ -131,6 +123,16 @@ class AuthService extends ChangeNotifier{
         'birthday' : birthday,
         'role' : role,
       });
+
+      Future<void> verifyEmail() async {
+        final User? user = _auth.currentUser;
+        if(user != null){
+          await user.sendEmailVerification();
+          print('Email verification sent to ${user.email}');
+        } else{
+          print("No user currently signed in");
+        }
+      }
 
       return userCredential.user;
     } on FirebaseAuthException catch (e) {

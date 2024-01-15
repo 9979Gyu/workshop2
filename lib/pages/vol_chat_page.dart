@@ -82,6 +82,7 @@ class _VolChatPageState extends State<VolChatPage> {
   }
 
   void sendMessage() async {
+
     // only send message if there is something to send
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
@@ -91,8 +92,31 @@ class _VolChatPageState extends State<VolChatPage> {
         widget.receiverIDuser,
       );
 
+      print(widget.receiverUserID);
+      print(widget.receiverIDuser);
       // clear the text controller after sending the message
       _messageController.clear();
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserData(String IDuser) async {
+    try {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(IDuser)
+          .get();
+
+      if (userSnapshot.exists) {
+        Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+        return userData;
+      } else {
+        // Document with the given userId does not exist
+        return null;
+      }
+    } catch (e) {
+      // Handle any potential errors here
+      print('Error fetching user data: $e');
+      return null;
     }
   }
 
@@ -350,7 +374,16 @@ class _VolChatPageState extends State<VolChatPage> {
 
           // Send button
           IconButton(
-            onPressed: sendMessage,
+            onPressed:() async{
+              // Retrieve and print user data for the receiverUserId
+              Map<String, dynamic>? userData = await getUserData(widget.receiverIDuser);
+              if (userData != null) {
+                print(userData);
+              } else {
+                print('User data found for IDuser: ${widget.receiverIDuser}');
+              }
+                sendMessage();
+            },
             icon: const Icon(
               Icons.telegram_rounded,
               size: 40,

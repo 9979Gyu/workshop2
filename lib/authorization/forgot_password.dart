@@ -24,42 +24,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Future passwordReset() async{
     try{
       await FirebaseAuth.instance
-          .sendPasswordResetEmail(
-          email: emailController.text.trim());
+          .sendPasswordResetEmail(email: emailController.text.trim());
+
       showDialog(
         context: context,
         builder: (context) {
           return const AlertDialog(
-            content: Text("Password successfully reset."),
+            content: Text(
+                "Password reset email sent. Please check your email."),
           );
         },
       );
     } on FirebaseAuthException catch(e){
-      String errorMessage;
-
-      switch (e.code){
-        case 'user-not-found':
-          errorMessage = "No user found for that email.";
-          break;
-        case 'invalid-email':
-          errorMessage = "The email is badly formatted.";
-          break;
-        case 'network-request-failed':
-          errorMessage = "Network error, please try again.";
-          break;
-        default:
-          errorMessage = e.message ?? "An unknown error occurred";
-          break;
-      }
-
-      showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            content: Text(errorMessage),
-          );
-        },
-      );
+     print(e);
+     showDialog(
+         context: context,
+         builder: (context){
+           return AlertDialog(
+             content: Text(e.message.toString()),
+           );
+         });
     }
     /*on FirebaseAuthException catch(e){
      if(e.code == 'user-not-found'){

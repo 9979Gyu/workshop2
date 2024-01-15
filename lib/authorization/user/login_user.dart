@@ -80,9 +80,9 @@ class _LoginPageState extends State<LoginPage> {
         //final SharedPreferences prefs = await SharedPreferences.getInstance();
         String username = emailController.text.trim(); // You can change this to your username logic if needed
 
-      //  String id = userDoc['userId'];// Assuming userId is a String
+      // String id = userDoc['userId'];// Assuming userId is a String
         String id = userDoc['IDuser'];// Assuming userId is a String
-        String usertype = userDoc['name']; // Replace 'userType' with your field name
+        //String usertype = userDoc['name']; // Replace 'userType' with your field name
 
 
         // OneSignal login

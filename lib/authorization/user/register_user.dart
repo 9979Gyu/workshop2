@@ -191,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
     DateTime? selected = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 

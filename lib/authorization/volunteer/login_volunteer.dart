@@ -6,6 +6,7 @@ import 'package:glaucotalk/authorization/volunteer/register_volunteer.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 import 'package:glaucotalk/pages/volunteer_homepage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginVol extends StatefulWidget {
@@ -62,6 +63,11 @@ class _LoginVolState extends State<LoginVol> {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('email', emailController.text);
         await prefs.setString('role', userDoc['role']); // Save the user's role
+
+        String id = userDoc['IDuser'];// Assuming userId is a String
+
+        // OneSignal login
+        OneSignal.login(id);
 
         // Close the loading dialog
         Navigator.of(context).pop();

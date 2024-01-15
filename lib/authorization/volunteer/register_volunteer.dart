@@ -28,6 +28,27 @@ class _RegisterVolState extends State<RegisterVol> {
   String? emailError;
   bool isPasswordVisible = false;
 
+  Future<String> getHighestUserId() async {
+    QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
+        .collection('users')
+        .orderBy('IDuser', descending: true)
+        .limit(1)
+        .get();
+
+    if (users.docs.isNotEmpty){
+      return users.docs.first['IDuser'];
+    } else {
+      // No existing users, return a default value or handle accordingly
+      return '0';
+    }
+  }
+
+  Future<String> generateNewUserId() async {
+    String highestUserId = await getHighestUserId();
+    int newUserId = int.parse(highestUserId) + 1;
+    return newUserId.toString();
+  }
+
   // User register method
   void volSignUp() async {
     // Show loading circle
@@ -66,14 +87,21 @@ class _RegisterVolState extends State<RegisterVol> {
           password: passwordController.text,
         );
 
+        String newUserId = await generateNewUserId();
+
         // Create a new document in Firestore for the users
-        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'IDuser': newUserId,
           'name': nameController.text,
           'email': emailController.text,
           'password': passwordController.text,
           'birthday': dateController.text,
           'username': usernameController.text,
           'role': 'volunteer',
+          'status' : 1,
         });
 
         // Show success message or navigate to homepage
@@ -142,7 +170,7 @@ class _RegisterVolState extends State<RegisterVol> {
     DateTime? selected = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 
