@@ -74,35 +74,4 @@ class AuthGoogle{
     int newUserId = int.parse(highestUserId) + 1;
     return newUserId.toString();
   }
-
-  // // Function to register user sign in with google account to firestore
-  // Future<void> saveUserDataToFirestore(User? user) async {
-  //   if (user != null) {
-  //     // Reference to the Firestore collection
-  //     final CollectionReference usersCollection =
-  //     FirebaseFirestore.instance.collection('users');
-  //
-  //     // Check if the user already exists in Firestore
-  //     final userDoc = await usersCollection.doc(user.uid).get();
-  //
-  //     // GET NEW USER ID
-  //     String newUserId = await generateNewUserId();
-  //
-  //     if (!userDoc.exists) {
-  //       // If the user does not exist, add their data to Firestore
-  //       await usersCollection.doc(user.uid).set({
-  //         'username': user.displayName,
-  //         'name': user.displayName,
-  //         'email': user.email,
-  //         'photoURL': user.photoURL,
-  //         'IDuser': newUserId,
-  //         'birthday': null,
-  //         'role': 'user',
-  //         'password': 'abc123',
-  //         'status' : 1,
-  //       });
-  //     }
-  //   }
-  // }
-
 }
