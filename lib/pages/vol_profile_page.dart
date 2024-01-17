@@ -48,14 +48,14 @@ class _VolProfilePageState extends State<VolProfilePage> {
       }
       final profile = 'profile_pictures/${user.uid}.png';
 
-      // upload image to cloud storage
+      // Upload image to cloud storage
       final UploadTask task = _storage.ref().child(profile).putData(_image!);
 
-      //get dwnld URL of the uploaded image
+      // Get download URL of the uploaded image
       final TaskSnapshot snapshot = await task;
       final imageUrl = await snapshot.ref.getDownloadURL();
 
-      // update user's firestore doc with the image url
+      // Update user's firestore doc with the image URL
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -66,13 +66,12 @@ class _VolProfilePageState extends State<VolProfilePage> {
           content: Text('Profile picture uploaded and updated.'),
         ),
       );
-    }catch (error) {
+    } catch (error) {
       // Handle errors here.
       print('Error uploading image: $error');
     }
   }
 
-  //
   Future<void> pickImage(ImageSource source) async {
     final pickedImage = await imagePicker.pickImage(source: source);
     if (pickedImage != null) {
@@ -80,8 +79,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
       setState(() {
         _image = Uint8List.fromList(imageBytes);
       });
-    }
-    else{
+    } else {
       print("Image source not found");
     }
   }
@@ -89,16 +87,16 @@ class _VolProfilePageState extends State<VolProfilePage> {
   @override
   void initState(){
     super.initState();
-    //call a function to fetch user's data from firestore
+    // Call a function to fetch user's data from firestore
     fetchUserData();
   }
 
   Future<void> fetchUserData() async{
     try{
-      // get tje current user's ID
+      // Get the current user's ID
       final userId = FirebaseAuth.instance.currentUser!.uid;
 
-      // fetch the user;s document from firestore
+      // Fetch the user's document from firestore
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -113,14 +111,13 @@ class _VolProfilePageState extends State<VolProfilePage> {
           profilePictureUrl = userDoc['profilePictureUrl'];
           dateController.text = userDoc['birthday'];
           dropdownvalue = userDoc['gender'] ?? 'Male';
-
         });
 
-        print("this is user name : ${userDoc['username']}");
+        print("This is user name : ${userDoc['username']}");
         print("This is profile picture : ${profilePictureUrl}");
       }
       else{
-        print("Data not exist");
+        print("Data does not exist");
       }
     }
     catch(e){
@@ -132,7 +129,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
     DateTime? selected = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 
@@ -142,18 +139,16 @@ class _VolProfilePageState extends State<VolProfilePage> {
             "${selected.year}-${selected.month.toString().padLeft(2, '0')}"
             "-${selected.day.toString().padLeft(2, '0')}";
         dateController.text = formattedDate; // Update the dateController
-        //dateController.text = selected.toString().split(" ")[0];
       });
     }
   }
 
   Future<void> updateUserData() async{
     try{
-      // get the current users ID
+      // Get the current user's ID
       final userId = FirebaseAuth.instance.currentUser!.uid;
-      print("This is image picture : ${_image}");
 
-      // update the user document in firestore
+      // Update the user document in firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -164,13 +159,12 @@ class _VolProfilePageState extends State<VolProfilePage> {
         'birthday' : dateController.text,
         'username' : usernameController.text,
         'profilePictureUrl' : profilePictureUrl,
-
       });
 
-      // inform the user that the profile has been updated
+      // Inform the user that the profile has been updated
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Profile update successfully'),
+          content: Text('Profile updated successfully'),
         ),
       );
     } catch(e){
@@ -201,7 +195,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
           },
           icon: const Icon(
             Icons.arrow_back,
-            ),
+          ),
         ),
       ),
 
@@ -222,7 +216,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
                       : (profilePictureUrl != null && profilePictureUrl.isNotEmpty
                       ? CircleAvatar(
                     radius: 64,
-                    backgroundImage: NetworkImage(profilePictureUrl!),
+                    backgroundImage: NetworkImage(profilePictureUrl),
                   )
                       : const CircleAvatar(
                     radius: 64,
@@ -236,7 +230,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
                         pickImage(ImageSource.gallery);
                       },
                       icon: const Icon(Icons.add_a_photo,
-                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -260,8 +254,7 @@ class _VolProfilePageState extends State<VolProfilePage> {
                     Expanded(
                       child: Text(
                         dropdownvalue,
-                        style: const TextStyle(
-                        ),
+                        style: const TextStyle(),
                       ),
                     ),
                     PopupMenuButton<String>(
@@ -310,9 +303,6 @@ class _VolProfilePageState extends State<VolProfilePage> {
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: "email",
-
-                  // filled: true,
-                  // fillColor: Color(0xF6F5F5FF),
                 ),
               ),
               TextField(
@@ -344,9 +334,8 @@ class _VolProfilePageState extends State<VolProfilePage> {
                 onPressed: () async {
                   if(usernameController.text.isNotEmpty &&
                       nameController.text.isNotEmpty &&
-                      passwordController.text.isNotEmpty &&
                       emailController.text.isNotEmpty){
-                    updateUserData();
+                    await updateUserData();
                     await uploadImageAndSave();
                     Navigator.pop(context, true);
                   }

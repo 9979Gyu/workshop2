@@ -131,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
     DateTime? selected = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 
@@ -166,11 +166,11 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       // inform the user that the profile has been updated
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text('Profile update successfully'),
-      //   ),
-      // );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Profile update successfully'),
+        ),
+      );
     } catch(e){
       print(e);
     }

@@ -67,10 +67,10 @@ class _LoginVolState extends State<LoginVol> {
         await prefs.setString('email', emailController.text);
         await prefs.setString('role', userDoc['role']); // Save the user's role
 
-        String id = userDoc['IDuser'];// Assuming userId is a String
+        int id = userDoc['IDuser'];// Assuming userId is a String
 
         // OneSignal login
-        OneSignal.login(id);
+        OneSignal.login(id.toString());
 
         // Close the loading dialog
         Navigator.of(context).pop();
@@ -94,7 +94,7 @@ class _LoginVolState extends State<LoginVol> {
       showErrorMessage(e.message ?? 'Login failed. Please try again');
     } catch(e){
       Navigator.of(context).pop();
-      showErrorMessage('Unexpected error occurred. Please try again');
+      showErrorMessage('Unexpected error occurred. Please try again $e');
     }
   }
 

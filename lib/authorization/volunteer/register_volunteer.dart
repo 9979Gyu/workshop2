@@ -5,6 +5,7 @@ import 'package:glaucotalk/authorization/volunteer/login_volunteer.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../controller/encryption.dart';
 
 class RegisterVol extends StatefulWidget {
   const RegisterVol({super.key});
@@ -27,6 +28,8 @@ class _RegisterVolState extends State<RegisterVol> {
   String? passwordError;
   String? emailError;
   bool isPasswordVisible = false;
+
+  final Encryption encryption = Encryption();
 
   Future<String> getHighestUserId() async {
     QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
@@ -88,6 +91,8 @@ class _RegisterVolState extends State<RegisterVol> {
         );
 
         String newUserId = await generateNewUserId();
+        String encryptedPwd =
+        encryption.encryptPassword(passwordController.text);
 
         // Create a new document in Firestore for the users
         await FirebaseFirestore.instance
@@ -97,7 +102,7 @@ class _RegisterVolState extends State<RegisterVol> {
           'IDuser': newUserId,
           'name': nameController.text,
           'email': emailController.text,
-          'password': passwordController.text,
+          'password': encryptedPwd,
           'birthday': dateController.text,
           'username': usernameController.text,
           'role': 'volunteer',
@@ -489,9 +494,9 @@ class _RegisterVolState extends State<RegisterVol> {
                         'Log In',
                         style: GoogleFonts.heebo(
                           textStyle: TextStyle(
-                              color: Colors.deepOrangeAccent[400],
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            color: Colors.deepOrangeAccent[400],
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),

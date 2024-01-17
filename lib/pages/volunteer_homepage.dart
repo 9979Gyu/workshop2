@@ -204,7 +204,7 @@ class _VolHomePageState extends State<VolHomePage> {
   Widget build(BuildContext context) {
     bool isNightMode = Provider.of<ThemeProvider>(context).themeData.brightness == Brightness.dark;
     return DefaultTabController(
-      length: 2,
+      length: 1,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
