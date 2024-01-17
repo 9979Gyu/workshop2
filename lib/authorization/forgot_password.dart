@@ -7,148 +7,124 @@ class ForgotPasswordPage extends StatefulWidget {
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
-  Color myCustomColor = const Color(0xFF00008B);
-  Color myTextColor = const Color(0xF6F5F5FF);
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
-  void dispose(){
+  void dispose() {
     emailController.dispose();
     super.dispose();
   }
 
-  Future passwordReset() async{
-    try{
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: emailController.text.trim());
-
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            content: Text(
-                "Password reset email sent. Please check your email."),
-          );
-        },
-      );
-    } on FirebaseAuthException catch(e){
-     print(e);
-     showDialog(
-         context: context,
-         builder: (context){
-           return AlertDialog(
-             content: Text(e.message.toString()),
-           );
-         });
+  Future<void> passwordReset() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await FirebaseAuth.instance
+            .sendPasswordResetEmail(email: emailController.text.trim());
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              content: Text("Password reset email sent. Please check your email."),
+            );
+          },
+        );
+      } on FirebaseAuthException catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(e.message.toString()),
+            );
+          },
+        );
+      }
     }
-    /*on FirebaseAuthException catch(e){
-     if(e.code == 'user-not-found'){
-       print(e);
-       showDialog(
-         context: context,
-         builder: (context){
-           return AlertDialog(
-             content: Text(e.message.toString()),
-           );
-         },
-       );
-     } else{
-       // handle other firebaseauth errors
-       showDialog(
-           context: context,
-           builder: (context){
-             return AlertDialog(
-               content: Text(e.message.toString()),
-             );
-           },
-       );
-     }
-
-   } */
   }
 
+  String? validateEmail(String? value) {
+    // Email validation regex pattern
+    final emailPattern = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$';
+    final RegExp regex = RegExp(emailPattern);
+
+    if (value == null || !regex.hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF00008B),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF00008B),
-        ),
-
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding:  const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                "Enter your Email, we will send the password reset link",
+      backgroundColor: Colors.indigo[900],
+      appBar: AppBar(
+        backgroundColor: Colors.black54,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Enter your email, we will send the password reset link",
                 style: GoogleFonts.poppins(
                   textStyle: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xF6F5F5FF),
-                  ),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xF6F5F5FF)),
                 ),
                 textAlign: TextAlign.center,
               ),
-
-            ),
-            const SizedBox(height:20 ),
-
-            //Email TextField
-            Center(
-              child: Padding(
-                padding:  const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    hintText: 'Email',
-                    fillColor: Colors.deepPurple[800],
-                    filled: true,
-                    hintStyle: const TextStyle(
-                      color: Colors.white,
-                    ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: emailController,
+                validator: validateEmail, // Email validation function
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  hintText: 'Email',
+                  fillColor: Colors.deepPurple[800],
+                  filled: true,
+                  hintStyle: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: 200,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 10,
+                    backgroundColor: Colors.deepOrangeAccent,
+                    shape: const StadiumBorder(),
+                  ),
+                  onPressed: passwordReset,
+                  child: const Text(
+                    "reset password",
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 40),
-
-            SizedBox(
-              width: 200,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 10,
-                  backgroundColor: Colors.deepOrangeAccent,
-                  shape: const StadiumBorder(),
-                ),
-                child: const Text(
-                  "Reset Password",
-                  style: TextStyle(
-                      color: Color(0xF6F5F5FF),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-                onPressed: (){
-                  passwordReset();
-                },
-              ),
-            ),
-          ],
-        )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

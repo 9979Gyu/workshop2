@@ -297,6 +297,10 @@ class _LoginPageState extends State<LoginPage> {
                               MaterialPageRoute(builder: (context){
                                 return  ForgotPasswordPage();
                               }));
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context){
+                          //       return  ResetPasswordScreen();
+                          //     }));
                         },
                         child: const Text(
                           'Forgot Password?',
