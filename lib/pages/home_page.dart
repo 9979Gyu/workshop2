@@ -457,32 +457,33 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 5),
 
-              ListTile(
-                leading: const Icon(
-                  Icons.account_circle_outlined,
-                  color: Color(0xF6F5F5FF),
-                  size: 40,
-                ),
-                title: const Text(
-                  'Account',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color:Color(0xF6F5F5FF),
+              if(!logGoogle)
+                ListTile(
+                  leading: const Icon(
+                    Icons.account_circle_outlined,
+                    color: Color(0xF6F5F5FF),
+                    size: 40,
                   ),
-                ),
-                selected: _selectedIndex == 0,
-                onTap: (){
-                  // Update the state of the app
-                  _onItemTapped(0);
-                  // then close the drawer
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingPageUI()
+                  title: const Text(
+                    'Account',
+                    style: TextStyle(
+                      fontSize: 30,
+                      color:Color(0xF6F5F5FF),
                     ),
-                  );
-                },
-              ),
+                  ),
+                  selected: _selectedIndex == 0,
+                  onTap: (){
+                    // Update the state of the app
+                    _onItemTapped(0);
+                    // then close the drawer
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingPageUI()
+                      ),
+                    );
+                  },
+                ),
 
               const SizedBox(height: 8,),
 

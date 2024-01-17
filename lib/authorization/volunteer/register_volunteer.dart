@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:glaucotalk/authorization/controller/AuthGoogle.dart';
 import 'package:glaucotalk/authorization/volunteer/login_volunteer.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
@@ -31,26 +32,29 @@ class _RegisterVolState extends State<RegisterVol> {
 
   final Encryption encryption = Encryption();
 
-  Future<String> getHighestUserId() async {
-    QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
-        .collection('users')
-        .orderBy('IDuser', descending: true)
-        .limit(1)
-        .get();
+  AuthGoogle authGoogle = new AuthGoogle();
 
-    if (users.docs.isNotEmpty){
-      return users.docs.first['IDuser'];
-    } else {
-      // No existing users, return a default value or handle accordingly
-      return '0';
-    }
-  }
 
-  Future<String> generateNewUserId() async {
-    String highestUserId = await getHighestUserId();
-    int newUserId = int.parse(highestUserId) + 1;
-    return newUserId.toString();
-  }
+  // Future<String> getHighestUserId() async {
+  //   QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .orderBy('IDuser', descending: true)
+  //       .limit(1)
+  //       .get();
+  //
+  //   if (users.docs.isNotEmpty){
+  //     return users.docs.first['IDuser'];
+  //   } else {
+  //     // No existing users, return a default value or handle accordingly
+  //     return '0';
+  //   }
+  // }
+  //
+  // Future<String> generateNewUserId() async {
+  //   String highestUserId = await getHighestUserId();
+  //   int newUserId = int.parse(highestUserId) + 1;
+  //   return newUserId.toString();
+  // }
 
   // User register method
   void volSignUp() async {
@@ -90,9 +94,10 @@ class _RegisterVolState extends State<RegisterVol> {
           password: passwordController.text,
         );
 
-        String newUserId = await generateNewUserId();
+        // GET NEW USER ID
+        int newUserId = await authGoogle.generateNewUserId();
         String encryptedPwd =
-        encryption.encryptPassword(passwordController.text);
+          encryption.encryptPassword(passwordController.text);
 
         // Create a new document in Firestore for the users
         await FirebaseFirestore.instance
