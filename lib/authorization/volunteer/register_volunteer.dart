@@ -5,6 +5,7 @@ import 'package:glaucotalk/authorization/controller/AuthGoogle.dart';
 import 'package:glaucotalk/authorization/volunteer/login_volunteer.dart';
 import 'package:glaucotalk/pages/home_page.dart';
 import 'package:glaucotalk/pages/main_menu.dart';
+import 'package:glaucotalk/pages/volunteer_homepage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/encryption.dart';
 
@@ -97,7 +98,7 @@ class _RegisterVolState extends State<RegisterVol> {
         // GET NEW USER ID
         int newUserId = await authGoogle.generateNewUserId();
         String encryptedPwd =
-          encryption.encryptPassword(passwordController.text);
+        encryption.encryptPassword(passwordController.text);
 
         // Create a new document in Firestore for the users
         await FirebaseFirestore.instance
@@ -118,7 +119,7 @@ class _RegisterVolState extends State<RegisterVol> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => VolHomePage(),
           ),
         );
       } else {
@@ -545,4 +546,3 @@ String? validatePassword(String value) {
   }
   return null;
 }
-
