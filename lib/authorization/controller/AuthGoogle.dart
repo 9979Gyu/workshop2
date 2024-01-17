@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class AuthGoogle{
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,12 +26,13 @@ class AuthGoogle{
 
       User? user = userCredential.user;
 
+
       if(user != null) {
+
+        int id;
         if (userCredential.additionalUserInfo!.isNewUser) {
-
           // GET NEW USER ID
-          String newUserId = await generateNewUserId();
-
+          int newUserId = await generateNewUserId();
           // Add data to db
           await _firestore.collection('users').doc(user.uid).set({
             'username': user.displayName,
@@ -42,9 +44,16 @@ class AuthGoogle{
             'role': role,
             'status' : 1
           });
+          id = newUserId;
+        }
+        else{
+          id = await getIDUserByEmail(userCredential.user!.email!);
         }
         result = true;
+        OneSignal.login(id.toString());
       }
+      // OneSignal login
+
       return result;
 
     }
@@ -54,24 +63,48 @@ class AuthGoogle{
     }
   }
 
-  Future<String> getHighestUserId() async {
+  Future<int> getHighestUserId() async {
     QuerySnapshot<Map<String, dynamic>> users = await FirebaseFirestore.instance
         .collection('users')
         .orderBy('IDuser', descending: true)
         .limit(1)
         .get();
 
-    if (users.docs.isNotEmpty){
+    if (users.docs.isNotEmpty) {
+      // Parse the IDuser as an integer and return
       return users.docs.first['IDuser'];
     } else {
       // No existing users, return a default value or handle accordingly
-      return '0';
+      return 0;
     }
   }
 
-  Future<String> generateNewUserId() async {
-    String highestUserId = await getHighestUserId();
-    int newUserId = int.parse(highestUserId) + 1;
-    return newUserId.toString();
+  Future<int> generateNewUserId() async {
+    int highestUserId = await getHighestUserId();
+    int newUserId = highestUserId + 1;
+    return newUserId;
   }
+
+  Future<int> getIDUserByEmail(String email) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> users = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (users.docs.isNotEmpty) {
+        return users.docs.first['IDuser'];
+      }
+      else {
+        return 0;
+      }
+    }
+    catch (e) {
+      print('Error fetching IDuser by email: $e');
+      return 0;
+    }
+  }
+
+
 }

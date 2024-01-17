@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,9 +26,14 @@ class VolHomePage extends StatefulWidget {
   VolHomePage({Key? key}) : super(key: key);
 
   final User? user = FirebaseAuth.instance.currentUser;
+  late bool logGoogle = false;
+
+  VolHomePage.loginWithGoogle(logGoogle){
+    this.logGoogle = logGoogle;
+  }
 
   @override
-  State<VolHomePage> createState() => _VolHomePageState();
+  State<VolHomePage> createState() => _VolHomePageState(logGoogle);
 }
 
 class _VolHomePageState extends State<VolHomePage> {
@@ -49,8 +55,11 @@ class _VolHomePageState extends State<VolHomePage> {
   late Timer timer;
 
   int _selectedIndex = 0;
+  bool logGoogle;
+  _VolHomePageState(this.logGoogle);
 
-  void navigateToTakePictureScreen(BuildContext context, CameraDescription? camera) {
+  void navigateToTakePictureScreen(BuildContext context,
+      CameraDescription? camera) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -391,33 +400,34 @@ class _VolHomePageState extends State<VolHomePage> {
 
               const SizedBox(height: 5),
 
-              ListTile(
-                leading: const Icon(
-                  Icons.account_circle_rounded,
-                  size: 25,
-                ),
-                title: Text(
-                  'Account',
-                  style: GoogleFonts.robotoCondensed(
-                    textStyle: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600
+              if(!logGoogle)
+                ListTile(
+                  leading: const Icon(
+                    Icons.account_circle_rounded,
+                    size: 25,
+                  ),
+                  title: Text(
+                    'Account',
+                    style: GoogleFonts.robotoCondensed(
+                      textStyle: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600
+                      ),
                     ),
                   ),
+                  selected: _selectedIndex == 0,
+                  onTap: () {
+                    // Update the state of the app
+                    _onItemTapped(0);
+                    // Close the drawer
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => const VolSettingPageUI()
+                      ),
+                    );
+                  },
                 ),
-                selected: _selectedIndex == 0,
-                onTap: () {
-                  // Update the state of the app
-                  _onItemTapped(0);
-                  // Close the drawer
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => const VolSettingPageUI()
-                    ),
-                  );
-                },
-              ),
 
               const SizedBox(height: 8),
 

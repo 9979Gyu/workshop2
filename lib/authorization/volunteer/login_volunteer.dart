@@ -333,7 +333,7 @@ class _LoginVolState extends State<LoginVol> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            VolHomePage(),
+                            VolHomePage.loginWithGoogle(true),
                       ),
                     );
                   }
