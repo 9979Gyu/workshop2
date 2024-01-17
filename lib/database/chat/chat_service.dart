@@ -8,7 +8,7 @@ class ChatService extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
-  Future<void> sendMessage(String receiverId, String message, String receiverIDuser, String name) async {
+  Future<void> sendMessage(String receiverId, String message, int receiverIDuser, String name) async {
     try {
       // Validate current user
       final currentUser = _firebaseAuth.currentUser;
@@ -57,7 +57,7 @@ class ChatService extends ChangeNotifier {
       onesignal.SendNotification(
           "New Message Received",
           message,
-          [receiverIDuser]);
+          [receiverIDuser.toString()]);
 
       print('Message sent successfully.');
     } catch (e) {

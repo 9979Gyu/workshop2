@@ -446,7 +446,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ChatPage extends StatefulWidget {
   final String receiverName;
   final String receiverUserID;
-  final String receiverIDuser;
+  final int receiverIDuser;
   final String senderprofilePicUrl;
 
   const ChatPage({
@@ -831,7 +831,7 @@ class _ChatPageState extends State<ChatPage> {
           IconButton(
               onPressed: () async {
                 // Retrieve and print user data for the receiverUserId
-                Map<String, dynamic>? userData = await getUserData(widget.receiverIDuser);
+                Map<String, dynamic>? userData = await getUserData(receiverUserID);
                 if (userData != null) {
                   print(userData);
                 } else {
