@@ -697,8 +697,8 @@ class _VolHomePageState extends State<VolHomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => VolChatPage(
-                receiverName: data['name'] ?? '',
-                receiverIDuser: data['IDuser'] ?? '',
+                receiverName: data['name'] ?? ' ',
+                receiverIDuser: data['IDuser'] ?? 0,
                 receiverUserID: document.id,
                 senderprofilePicUrl: data['profilePicUrl'] ?? '',
               ),
