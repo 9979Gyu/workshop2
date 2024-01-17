@@ -82,12 +82,12 @@ class _LoginPageState extends State<LoginPage> {
         String username = emailController.text.trim(); // You can change this to your username logic if needed
 
       // String id = userDoc['userId'];// Assuming userId is a String
-        String id = userDoc['IDuser'];// Assuming userId is a String
+        int id = userDoc['IDuser'];// Assuming userId is a String
         //String usertype = userDoc['name']; // Replace 'userType' with your field name
 
         // OneSignal login
        //OneSignal.login(id);
-        OneSignal.login(id);
+        OneSignal.login(id.toString());
 
         // pop loading circle before user logged in
         Navigator.pop(context);

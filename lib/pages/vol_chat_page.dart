@@ -88,7 +88,7 @@ class _VolChatPageState extends State<VolChatPage> {
       await _chatService.sendMessage(
         receiverUserID,
         _messageController.text,
-        widget.receiverName,
+        1,
         widget.receiverIDuser,
       );
 
